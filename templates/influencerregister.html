@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="{{ url_for('static', filename='title-logo.png') }}" type="image">
+        <title>Influencer Registration</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='registration.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="content-wrapper text-center">
+            <h1 style="padding-top: 10px;"><img src="{{ url_for('static', filename='logo.png') }}" class="loginLogo img-fluid"></h1>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row text-center">
+                <h1>Register as an Influencer.</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 form-container">
+                    <form action="{{ url_for('influencer_registration') }}" method="POST">
+                        <div class="form-group">
+                            <label for="UserInput">Username</label>
+                            <input type="text" class="form-control" id="UserInput" placeholder="Username" name="username" required>
+                            {% if username_exists %}
+                                <br>
+                                <div class="alert alert-danger" style="padding: 5px;">
+                                    <p style="margin-bottom: 0px; text-align: center;">Username already exists.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="InputName">Full Name</label>
+                            <input type="text" class="form-control" id="InputName" placeholder="Full Name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputBio">Bio</label>
+                            <textarea type="text" class="form-control" id="InputBio" placeholder="Tell us about yourself" name="bio" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputPassword">Password</label>
+                            <input type="password" class="form-control" id="InputPassword" placeholder="Password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="platforms">Available Platforms</label>
+                            <div id="platforms" class="d-flex flex-wrap justify-content-center">
+                                <div class="card-platform" data-platform="youtube">
+                                    <i class="fa fa-youtube-play" style="font-size:48px;color:red"></i>
+                                </div>
+                                <div class="card-platform" data-platform="instagram">
+                                    <i class="fa fa-instagram" style="font-size:48px;color:red"></i>
+                                </div>
+                                <div class="card-platform" data-platform="twitch" class="img-fluid">
+                                    <i class="fa fa-twitch" style="font-size:48px;color:red"></i>
+                                </div>
+                                <div class="card-platform" data-platform="twitter">
+                                    <i class="fa fa-twitter" style="font-size:48px;color:red"></i>
+                                </div>
+                            </div>
+                            <input type="hidden" id="selectedPlatforms" name="selectedPlatforms" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categories">Categories</label>
+                            <div class="dropdown" id="dropdownContainer1">
+                                <button class="btn dropdown-btn dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Select Category
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <a class="dropdown-item" href="#" data-category="gaming">Gaming</a>
+                                    <a class="dropdown-item" href="#" data-category="clothing">Clothing</a>
+                                    <a class="dropdown-item" href="#" data-category="entertainment">Entertainment</a>
+                                    <a class="dropdown-item" href="#" data-category="fashion">Fashion</a>
+                                    <a class="dropdown-item" href="#" data-category="automotive">Automotive</a>
+                                    <a class="dropdown-item" href="#" data-category="education">Education</a>
+                                    <a class="dropdown-item" href="#" data-category="health-fitness">Health and Fitness</a>
+                                    <a class="dropdown-item" href="#" data-category="finance">Finance</a>
+                                    <a class="dropdown-item" href="#" data-category="sports">Sports</a>
+                                </div>
+                            </div>
+                            <input type="hidden" id="category" name="category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="niches">Niches</label>
+                            <div class="dropdown" id="dropdownContainer2">
+                                <button class="btn dropdown-btn dropdown-toggle w-100" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Select Niche
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                    <a class="dropdown-item" href="#" data-category="blogging">Blogging</a>
+                                    <a class="dropdown-item" href="#" data-category="vlogging">Vlogging</a>
+                                    <a class="dropdown-item" href="#" data-category="tutorials">Tutorials</a>
+                                    <a class="dropdown-item" href="#" data-category="Reels">Reels</a>
+                                    <a class="dropdown-item" href="#" data-category="music">Music</a>
+                                    <a class="dropdown-item" href="#" data-category="photography">Photography</a>
+                                    <a class="dropdown-item" href="#" data-category="journalism">Journalism</a>
+                                </div>
+                            </div>
+                            <input type="hidden" id="niche" name="niche" required>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn-submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const cards = document.querySelectorAll('.card-platform');
+                    const selectedPlatformsInput = document.getElementById('selectedPlatforms');
+                    const categoryLinks1 = document.querySelectorAll('#dropdownContainer1 .dropdown-item');
+                    const categoryLinks2 = document.querySelectorAll('#dropdownContainer2 .dropdown-item');
+                    const dropdownMenuButton1 = document.getElementById('dropdownMenuButton1');
+                    const dropdownMenuButton2 = document.getElementById('dropdownMenuButton2');
+                    const categoryInput = document.getElementById('category');
+                    const nicheInput = document.getElementById('niche');
+                    
+                    cards.forEach(card => {
+                        card.addEventListener('click', function() {
+                            this.classList.toggle('selected');
+                            updateSelectedPlatforms();
+                        });
+                    });
+
+                    categoryLinks1.forEach(link => {
+                        link.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            selectCategory1(this.getAttribute('data-category'), this.textContent);
+                        });
+                    });
+
+                    categoryLinks2.forEach(link => {
+                        link.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            selectCategory2(this.getAttribute('data-category'), this.textContent);
+                        });
+                    });
+
+                    function updateSelectedPlatforms() {
+                        const selectedPlatforms = [];
+                        cards.forEach(card => {
+                            if (card.classList.contains('selected')) {
+                                selectedPlatforms.push(card.getAttribute('data-platform'));
+                            }
+                        });
+                        selectedPlatformsInput.value = selectedPlatforms.join(',');
+                    }
+
+                    function selectCategory1(categoryValue, categoryText) {
+                        dropdownMenuButton1.textContent = categoryText;
+                        dropdownMenuButton1.setAttribute('data-category', categoryValue);
+                        categoryInput.value = categoryValue;
+                    }
+
+                    function selectCategory2(categoryValue, categoryText) {
+                        dropdownMenuButton2.textContent = categoryText;
+                        dropdownMenuButton2.setAttribute('data-category', categoryValue);
+                        nicheInput.value = categoryValue;
+                    }
+                });
+
+                const colors = ['#FFC300', '#33FF57', '#339FFF', '#9D33FF'];
+                let colorIndex = 0;
+                document.querySelectorAll('.btn-submit').forEach(btn => {
+
+                    btn.addEventListener('mouseenter', () => {
+                        btn.style.backgroundColor = colors[colorIndex];
+                        colorIndex = (colorIndex + 1) % colors.length;
+                        btn.style.color = 'white';
+                    });
+
+                    btn.addEventListener('mouseleave', () => {
+                        btn.style.backgroundColor = '#FF5733';
+                    });
+                });
+
+            </script>
+        </div>
+    </body>
+</html>
