@@ -44,7 +44,7 @@ class AdRequests(db.Model):
     sponsor = db.Column(db.String, db.ForeignKey('Sponsor.username'), nullable=False)
     influencer = db.Column(db.String, db.ForeignKey('Influencer.username'))
     description = db.Column(db.String)
-    progress = db.Column(db.Integer)
+    niche = db.Column(db.String)
     payment = db.Column(db.Integer)
     status = db.Column(db.Integer)
     flag = db.Column(db.Integer)
@@ -61,4 +61,28 @@ class Campaign(db.Model):
     budget = db.Column(db.Integer)
     goals = db.Column(db.String)
     flag = db.Column(db.Integer)
+
+# Requests from influencers to participate in a campaign, before it is converted to an ad request
+class InfluencerRequests(db.Model):
+    __tablename__ = 'InfluencerRequests'
+    key = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    influencer = db.Column(db.String, db.ForeignKey('Influencer.username'), nullable=False)
+    sponsor = db.Column(db.String, db.ForeignKey('Sponsor.username'), nullable=False)
+    campaign = db.Column(db.Integer, db.ForeignKey('Campaign.key'))
+    description = db.Column(db.String)
+    niche = db.Column(db.String)
+    payment = db.Column(db.Integer)
+    status = db.Column(db.Integer)
+
+# Requests from sponsors to influencers to participate in a campaign, before it is converted to an ad request
+class SponsorRequests(db.Model):
+    __tablename__ = 'SponsorRequests'
+    key = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    influencer = db.Column(db.String, db.ForeignKey('Influencer.username'), nullable=False)
+    sponsor = db.Column(db.String, db.ForeignKey('Sponsor.username'), nullable=False)
+    campaign = db.Column(db.Integer, db.ForeignKey('Campaign.key'))
+    description = db.Column(db.String)
+    niche = db.Column(db.String)
+    payment = db.Column(db.Integer)
+    status = db.Column(db.Integer)
     

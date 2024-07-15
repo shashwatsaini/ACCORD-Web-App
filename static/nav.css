@@ -1,0 +1,94 @@
+
+.navbar-brand {
+    height: fit-content;
+    width: 10%;
+}
+
+.navbar{
+    box-shadow: 1px 2px 2px 1px #FF5733;
+}
+
+.navbar-nav .nav-item {
+    margin-left: 100px;
+}
+
+.nav-link{
+    border: none;
+}
+.nav-link:hover{
+    background-color: #FF5733;
+}
+
+.nav-link.btn:hover {
+    color: white !important;
+}
+
+.logout-btn {
+    background-color: white;
+    color: #FF5733;
+    border: 1px solid #FF5733;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #FF5733;
+    color: white;
+}
+
+.wrap {
+    position: relative;
+    height: 55px;
+    line-height: 55px;
+    border-radius: 5px;
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    border: 0;
+    background: transparent;
+    width: 0%;
+    outline: none;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #000;
+    font-style: italic;
+    transition: all 0.1s ease;
+    position: relative;
+}
+
+.wrap .fa {
+    color: #FF5733;
+    font-size: 22px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 30px;
+}
+
+.wrap.active {
+    width: 250px;
+    padding-left: 25px;
+    transition: all 0.1s ease;
+}
+
+.input.active {
+    width: 100%;
+    padding-left: 5px;
+    transition: all 0.1s 0.2s ease;
+}
+
+input::placeholder {
+    color: #FF5733;
+}
+
+#searchForm {
+    display: none;
+    transition: all 0.5s ease-in-out;
+}
+
+.search-active #searchForm {
+    display: flex;
+}

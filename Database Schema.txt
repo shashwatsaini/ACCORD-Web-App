@@ -1,0 +1,60 @@
+Admin Table:
+	Username (PRIMARY KEY)
+	Password
+	Name
+
+Influencer Table:
+	Username (PRIMARY KEY)
+	Password
+	Name
+	Bio
+	Platforms
+	Category
+	Niche
+	Reach (1..5)
+
+Sponsor Table:
+	Username (PRIMARY KEY)
+	Password
+	Company
+	Industry
+	
+Ad Requests Table:
+	Key (PRIMARY KEY, AI)
+	Campaign Key (NULL)
+	Sponsor Key (FOREIGN KEY to Sponsor Table)
+	Influencer Key (FOREIGN KEY to Influencer Table, NULL)
+	Description
+	Progress
+	Payment
+	Status (0..2)
+
+Campaign Table:
+	Campaign Key (PRIMARY KEY, AI)  
+	Sponsor (FOREIGN KEY to Sponsor Table)
+	Influencer (FOREIGN KEY to Influencer Table, NULL)
+	Name
+	Description
+	Progress
+	Start_Date
+	End_Date
+	Budget
+	Goals
+
+----------------------------------------------------------------------------------
+
+Project Name: Accord
+
+----------------------------------------------------------------------------------
+
+Login System:
+	One user login page for influencer and sponsor, should distinguish between roles automatically.
+
+User Login:
+	Username
+	Password
+	Login
+	Register as an Influencer
+	Register as a Sponsor
+	
+	

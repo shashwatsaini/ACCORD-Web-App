@@ -41,6 +41,10 @@ body {
     text-align: center; /* Center the dropdown items */
 }
 
+.form-outline {
+    height: 50%;
+}
+
 .row{
     padding-top: 20px;
     padding-bottom: 20px;
