@@ -48,23 +48,84 @@
     </div>
 
     <div class="modal fade" id="adRequestModal" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="adRequestModalLabel">Ad Request Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Sponsor:</strong> <span id="modal-sponsor"></span></p>
-                    <p><strong>Influencer:</strong> <span id="modal-influencer"></span></p>
-                    <p><strong>Description:</strong> <span id="modal-description"></span></p>
-                    <p><strong>Niche:</strong> <span id="modal-niche"></span></p>
-                    <p><strong>Payment:</strong> $<span id="modal-payment"></span></p>
-                    <p><strong>Status:</strong> <span id="modal-status"></span></p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 ad-request-card">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Ad Request 1</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-1"></span></p>
+                                        <p><strong>Influencer:</strong> <span id="modal-influencer-1"></span></p>
+                                        <p><strong>Description:</strong> <span id="modal-description-1"></span></p>
+                                        <p><strong>Niche:</strong> <span id="modal-niche-1"></span></p>
+                                        <p><strong>Payment:</strong> $<span id="modal-payment-1"></span></p>
+                                        <p><strong>Status:</strong> <span id="modal-status-1"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ad-request-card">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Ad Request 2</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
+                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
+                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
+                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
+                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
+                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 ad-request-card">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Ad Request 2</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
+                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
+                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
+                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
+                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
+                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ad-request-card">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Ad Request 2</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
+                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
+                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
+                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
+                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
+                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     {% if campaigns[0] %}
@@ -94,7 +155,6 @@
                                         {{ campaign.description }}
                                         <br><br>
                                         <p class="card-text">Goals: {{ campaign.goals }}</p>
-                                        <!-- Update the button inside the card body -->
                                         <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
                                         data-sponsor="{{ campaign.sponsor }}" data-influencer="{{ campaign.influencer }}" data-description="{{ campaign.description }}"
                                         data-niche="{{ campaign.niche }}" data-payment="{{ campaign.payment }}" data-status="{{ campaign.status }}">
