@@ -47,6 +47,26 @@
         </nav>
     </div>
 
+    <div class="modal fade" id="adRequestModal" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adRequestModalLabel">Ad Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Sponsor:</strong> <span id="modal-sponsor"></span></p>
+                    <p><strong>Influencer:</strong> <span id="modal-influencer"></span></p>
+                    <p><strong>Description:</strong> <span id="modal-description"></span></p>
+                    <p><strong>Niche:</strong> <span id="modal-niche"></span></p>
+                    <p><strong>Payment:</strong> $<span id="modal-payment"></span></p>
+                    <p><strong>Status:</strong> <span id="modal-status"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     {% if campaigns[0] %}
     <br><br>
     <div class="container">
@@ -74,9 +94,13 @@
                                         {{ campaign.description }}
                                         <br><br>
                                         <p class="card-text">Goals: {{ campaign.goals }}</p>
-                                        <button class="btn btn-custom w-100 mt-2" type="button">
+                                        <!-- Update the button inside the card body -->
+                                        <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
+                                        data-sponsor="{{ campaign.sponsor }}" data-influencer="{{ campaign.influencer }}" data-description="{{ campaign.description }}"
+                                        data-niche="{{ campaign.niche }}" data-payment="{{ campaign.payment }}" data-status="{{ campaign.status }}">
                                             View Ad Requests
                                         </button>
+
                                     </div>
                                 </div>
                                 <div class="card-footer text-body-secondary d-flex justify-content-between">
@@ -117,7 +141,7 @@
                 </a>
             </div>
         </div>
-        
+
         {% if influencer_requests[0] %}
         <br><br><br>
         <div class="row">
@@ -261,7 +285,9 @@
                                             {{ campaign.description }}
                                             <br><br>
                                             <p class="card-text">Goals: {{ campaign.goals }}</p>
-                                            <button class="btn btn-custom w-100 mt-2" type="button">
+                                            <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
+                                            data-sponsor="{{ campaign.sponsor }}" data-influencer="{{ campaign.influencer }}" data-description="{{ campaign.description }}"
+                                            data-niche="{{ campaign.niche }}" data-payment="{{ campaign.payment }}" data-status="{{ campaign.status }}">
                                                 View Ad Requests
                                             </button>
                                         </div>
@@ -303,7 +329,6 @@
             <p>&copy; 2024 Accord. All rights reserved.</p>
         </div>
     </footer>
-    
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -356,14 +381,40 @@
                 'gradient-3',
                 'gradient-4'
             ];
-            
-            const cards = document.querySelectorAll('.custom-card'); 
+
+            const cards = document.querySelectorAll('.custom-card');
 
             cards.forEach((card, index) => {
-                const header = card.querySelector('.custom-card-header'); 
+                const header = card.querySelector('.custom-card-header');
                 if (header) {
-                    header.classList.add(gradients[index % gradients.length]); 
+                    header.classList.add(gradients[index % gradients.length]);
                 }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var adRequestModal = document.getElementById('adRequestModal');
+            adRequestModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var sponsor = button.getAttribute('data-sponsor');
+                var influencer = button.getAttribute('data-influencer');
+                var description = button.getAttribute('data-description');
+                var niche = button.getAttribute('data-niche');
+                var payment = button.getAttribute('data-payment');
+                var status = button.getAttribute('data-status');
+
+                var modalSponsor = adRequestModal.querySelector('#modal-sponsor');
+                var modalInfluencer = adRequestModal.querySelector('#modal-influencer');
+                var modalDescription = adRequestModal.querySelector('#modal-description');
+                var modalNiche = adRequestModal.querySelector('#modal-niche');
+                var modalPayment = adRequestModal.querySelector('#modal-payment');
+                var modalStatus = adRequestModal.querySelector('#modal-status');
+
+                modalSponsor.textContent = sponsor;
+                modalInfluencer.textContent = influencer;
+                modalDescription.textContent = description;
+                modalNiche.textContent = niche;
+                modalPayment.textContent = payment;
+                modalStatus.textContent = status;
             });
         });
     </script>
