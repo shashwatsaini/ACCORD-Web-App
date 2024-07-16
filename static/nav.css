@@ -92,3 +92,11 @@ input::placeholder {
 .search-active #searchForm {
     display: flex;
 }
+
+.footer {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+    text-align: center;
+    padding-bottom: 5px;
+    margin-top: auto;
+}

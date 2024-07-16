@@ -27,21 +27,18 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Profile</button>
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('sponsor_profile')}}'">Profile</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;">Campaigns</button>
+                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('sponsor_dashboard')}}'">Campaigns</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Find Influencers</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Stats</button>
                         </li>
                     </ul>
-                    <div class="wrap" id="searchWrap">
-                        <form>
-                            <input type="text" class="input" placeholder="Search">
-                        </form>
-                        <i class="fa fa-search" aria-hidden="true" id="searchIcon"></i>
-                    </div>
                     <form action="{{ url_for('logout') }}">
                     <button class="btn btn-outline-danger logout-btn" type="submit">Log out</button>
                     </form>
@@ -108,6 +105,18 @@
             </div>
         </div>
         {% endif %}
+
+        <br><br><br>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 style="color: black;">Add Campaigns</h1>
+            </div>
+            <div class="col-12 justify-content-center d-flex add-container">
+                <a href="{{ url_for('create_campaign') }}" class="btn btn-primary btn-add-campaign">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
         
         {% if influencer_requests[0] %}
         <br><br><br>
@@ -137,6 +146,9 @@
                                     <div class="card card-body mt-2">
                                         <p class="card-text">{{ request.description }}</p>
                                         <p class="card-text">Niche: {{ request.niche }}</p>
+                                        <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                            See Profile
+                                        </button>
                                         <button class="btn custom-btn-warning w-100 mt-2" type="button">
                                             Negotiate
                                             <!-- Add logic to transfer influencer request to sponsor request -->
@@ -168,6 +180,7 @@
         <br><br><br>
         <div class="row">
           <div class="col-12 text-center">
+            <br><br><br>
             <h1 style="color: black;">Past Requests</h1>
           </div>
           <div class="col-12 text-center card-container">
@@ -219,19 +232,78 @@
         {% endif %}
 
       </div>
-      <br><br><br>
-        <div class="row">
-            <div class="col-12 text-center">
-                <h1 style="color: black;">Add Campaigns</h1>
+
+        {% if past_campaigns[0] %}
+        <br><br>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <br><br><br>
+                    <h1 style="color: black;">Past Campaigns</h1>
+                </div>
             </div>
-            <div class="col-12 justify-content-center d-flex add-container">
-                <a href="{{ url_for('create_campaign') }}" class="btn btn-primary btn-add-campaign">
-                    <i class="fas fa-plus"></i>
-                </a>
+            <div class="row">
+                <div class="col-12 text-center card-container">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            {% for campaign in past_campaigns %}
+                            <div class="swiper-slide d-flex">
+                                <div class="card" style="width: 30rem;">
+                                    <div class="card-header">
+                                        <h5 class="card-title">{{ campaign.name }}</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">Progress: <span class="badge bg-success">{{ campaign.progress }}%</span></p>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ campaign.progress }}%;" aria-valuenow="{{ campaign.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div>
+                                            {{ campaign.description }}
+                                            <br><br>
+                                            <p class="card-text">Goals: {{ campaign.goals }}</p>
+                                            <button class="btn btn-custom w-100 mt-2" type="button">
+                                                View Ad Requests
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-body-secondary d-flex justify-content-between">
+                                        <div>
+                                            {{ campaign.start_date }}
+                                        </div>
+                                        <div style="color: #FF5733;">
+                                            {{ campaign.end_date }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-      <br><br>
+            {% else %}
+            <br><br>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 style="color: black;">No Past Campaigns</h1>
+                </div>
+            </div>
+            {% endif %}
+        <br><br>
     </div>
+    </div>
+    </div>
+
+    <footer class="footer text-white text-center">
+        <div class="container">
+            <br>
+            <p>&copy; 2024 Accord. All rights reserved.</p>
+        </div>
+    </footer>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
