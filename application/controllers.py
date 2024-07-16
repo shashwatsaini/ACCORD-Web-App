@@ -30,7 +30,7 @@ def login():
         if Influencer.query.filter_by(username=username, password=password).first():
             user = Influencer.query.filter_by(username=username).first()
             login_user(load_user(username))
-            return redirect(url_for('influencer-dashboard.html'))
+            return redirect(url_for('influencer_dashboard'))
         elif Sponsor.query.filter_by(username=username, password=password).first():
             user = Sponsor.query.filter_by(username=username).first()
             login_user(load_user(username))
@@ -97,14 +97,46 @@ def sponsor_registration():
             db.session.commit()
             return redirect(url_for('login'))
 
+@app.route('/influencer/dashboard', methods=['GET', 'POST'])
+#@login_required
+def influencer_dashboard():
+    if request.method == 'GET':
+        ads_campaigns = (
+            db.session.query(AdRequests, Campaign, Sponsor)
+            .join(Campaign, AdRequests.campaign == Campaign.key)
+            .join(Sponsor, Campaign.sponsor == Sponsor.username)
+            .filter(AdRequests.influencer == 'influencer', AdRequests.status != 4)
+            .all()[::-1]
+        )
+        sponsor_requests = (
+            db.session.query(SponsorRequests, Campaign, Sponsor)
+            .join(Campaign, SponsorRequests.campaign == Campaign.key)
+            .join(Sponsor, SponsorRequests.sponsor == Sponsor.username)
+            .filter(SponsorRequests.influencer == 'influencer', SponsorRequests.status != 4)
+            .all()[::-1]
+        )
+        return render_template('influencerdashboard.html', ads_campaigns=ads_campaigns, sponsor_requests=sponsor_requests)
+
 @app.route('/sponsor/dashboard', methods=['GET', 'POST'])
 #@login_required
 def sponsor_dashboard():
     if request.method == 'GET':
         campaigns = db.session.query(Campaign).filter(Campaign.sponsor=='sponsor', Campaign.progress!=100).all()[::-1]
         past_campaigns = db.session.query(Campaign).filter(Campaign.sponsor=='sponsor', Campaign.progress==100).all()[::-1]
-        influencer_requests = db.session.query(InfluencerRequests, Campaign.name).join(Campaign).filter(InfluencerRequests.sponsor == 'sponsor', InfluencerRequests.status == 0).all()[::-1]
-        past_influencer_requests = db.session.query(InfluencerRequests, Campaign.name).join(Campaign).filter(InfluencerRequests.sponsor == 'sponsor', InfluencerRequests.status != 0).all()[::-1]
+        influencer_requests = (
+            db.session.query(InfluencerRequests, Campaign, Influencer)
+            .join(Campaign, InfluencerRequests.campaign == Campaign.key)
+            .join(Influencer, InfluencerRequests.influencer == Influencer.username)
+            .filter(InfluencerRequests.sponsor == 'sponsor', InfluencerRequests.status == 0)
+            .all()[::-1]
+        )
+        past_influencer_requests = (
+            db.session.query(InfluencerRequests, Campaign, Influencer)
+            .join(Campaign, InfluencerRequests.campaign == Campaign.key)
+            .join(Influencer, InfluencerRequests.influencer == Influencer.username)
+            .filter(InfluencerRequests.sponsor == 'sponsor', InfluencerRequests.status != 0)
+            .all()[::-1]
+        )
 
         for campaign in campaigns:
             if campaign.end_date < datetime.now().date():

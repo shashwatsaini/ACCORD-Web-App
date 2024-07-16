@@ -127,7 +127,7 @@
           <div class="col-12 text-center card-container">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    {% for request, campaign in influencer_requests %}
+                    {% for request, campaign, influencer in influencer_requests %}
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
@@ -135,7 +135,7 @@
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
-                                <h6 class="card-title">{{ request.influencer }}</h6>
+                                <h6 class="card-title">{{ influencer.name }}</h6>
                                 <hr>
                                 <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite1" aria-expanded="false" aria-controls="collapseInvite1">
                                     View
@@ -186,7 +186,7 @@
           <div class="col-12 text-center card-container">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    {% for request, campaign in past_influencer_requests %}
+                    {% for request, campaign, influencer in past_influencer_requests %}
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
@@ -194,9 +194,9 @@
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
-                                <h6 class="card-title">{{ request.influencer }}</h6>
+                                <h6 class="card-title">{{ influencer.name }}</h6>
                                 <hr>
-                                <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite1" aria-expanded="false" aria-controls="collapseInvite1">
+                                <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite2" aria-expanded="false" aria-controls="collapseInvite1">
                                     View
                                 </button>
                                 {% if request.status == 2 %}
@@ -204,7 +204,7 @@
                                 {% else %}
                                 <button class="btn custom-btn-danger" type="button">Rejected</button>
                                 {% endif %}
-                                <div class="collapse" id="collapseInvite1">
+                                <div class="collapse" id="collapseInvite2">
                                     <div class="card card-body mt-2">
                                         <p class="card-text">{{ request.description }}</p>
                                         <p class="card-text">Niche: {{ request.niche }}</p>
