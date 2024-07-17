@@ -271,3 +271,12 @@ input::placeholder {
     color: white;
     background: linear-gradient(0deg, #FF5733, #FF8C6B);
 }
+
+.modal-header {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+}
+
+.ad-request-card{
+    padding: 30px;
+}

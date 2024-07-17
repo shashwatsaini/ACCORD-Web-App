@@ -27,7 +27,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('sponsor_profile')}}'">Profile</button>
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('influencer_profile')}}'">Profile</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('influencer_dashboard')}}'">Ad Requests</button>
@@ -76,12 +76,15 @@
                                         <div class="collapse" id="collapseInvite1">
                                             <br>
                                             <div class="card card-body mt-2">
-                                                <p class="card-text">Campaign Description</p>
-                                                <p class="card-text">Goals: </p>
-                                                <p class="card-text">Progress: <span class="badge bg-success">10%</span></p>
+                                                <p class="card-text">Campaign Description: </p><p class="card-text">{{ campaign.description }}</p>
+                                                <p class="card-text">Goals: {{ campaign.goals }}</p>
+                                                <p class="card-text">Progress: <span class="badge bg-success">{{ campaign.progress }}%</span></p>
                                                 <div class="progress mb-3">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ campaign.progress }}%;" aria-valuenow="{{ campaign.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
+                                                <button class="btn custom-btn-danger" type="button" onclick="location.href='{{ url_for('complete_ad_request', key=ad.key) }}'">
+                                                    Mark as Completed
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -134,8 +137,8 @@
                                     <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite2" aria-expanded="false" aria-controls="collapseInvite2">
                                         View
                                     </button>
-                                    <button class="btn custom-btn" type="button" onclick="location.href='/sponsor/influencer-requests/accept/{{ request.key }}'">Accept</button>
-                                    <button class="btn custom-btn-danger" type="button" onclick="location.href='/sponsor/influencer-requests/reject/{{ request.key }}'">Reject</button>
+                                    <button class="btn custom-btn" type="button" onclick="location.href='/influencer/sponsor-requests/accept/{{ request.key }}'">Accept</button>
+                                    <button class="btn custom-btn-danger" type="button" onclick="location.href='/influencer/sponsor-requests/reject/{{ request.key }}'">Reject</button>
                                     <div class="collapse" id="collapseInvite2">
                                         <div class="card card-body mt-2">
                                             <p class="card-text">{{ request.description }}</p>
@@ -167,6 +170,118 @@
         <div class="row">
             <div class="col-12 text-center">
               <h1 style="color: black;">No New Requests</h1>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if completed_requests[0] %}
+        <br><br>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 style="color: black;">Completed Requests</h1>
+            </div>
+            <div class="col-12 text-center card-container">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {% for request, campaign, sponsor in completed_requests %}
+                        <div class="swiper-slide d-flex">
+                            <div class="custom-card" style="width: 30rem;">
+                                <div class="custom-card-header">
+                                    <h5 class="card-title">{{ campaign.name }}</h5>
+                                </div>
+                                <div class="custom-card-body">
+                                    <p class="card-text">From</p>
+                                    <h6 class="card-title">{{ sponsor.company }}</h6>
+                                    <hr>
+                                    <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite3" aria-expanded="false" aria-controls="collapseInvite3">
+                                        View
+                                    </button>
+                                    {% if request.status == 3 %}
+                                    <button class="btn custom-btn-danger" type="button">Awaiting Payment</button>
+                                    {% else %}
+                                    <button class="btn custom-btn" type="button">Payment Received</button>
+                                    {% endif %}
+                                    <div class="collapse" id="collapseInvite3">
+                                        <div class="card card-body mt-2">
+                                            <p class="card-text">{{ request.description }}</p>
+                                            <p class="card-text">Niche: {{ request.niche }}</p>
+                                            <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                                See Profile
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-card-footer">
+                                    <p class="card-text">Payment: ${{ request.payment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>  
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+        {% else %}
+        <br><br><br>
+        <div class="row">
+            <div class="col-12 text-center">
+              <h1 style="color: black;">No Completed Requests</h1>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if past_sponsor_requests[0] %}
+        <br><br>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 style="color: black;">Rejected Requests</h1>
+            </div>
+            <div class="col-12 text-center card-container">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {% for request, campaign, sponsor in past_sponsor_requests %}
+                        <div class="swiper-slide d-flex">
+                            <div class="custom-card" style="width: 30rem;">
+                                <div class="custom-card-header">
+                                    <h5 class="card-title">{{ campaign.name }}</h5>
+                                </div>
+                                <div class="custom-card-body">
+                                    <p class="card-text">From</p>
+                                    <h6 class="card-title">{{ sponsor.company }}</h6>
+                                    <hr>
+                                    <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite4" aria-expanded="false" aria-controls="collapseInvite4">
+                                        View
+                                    </button>
+                                    <button class="btn custom-btn-danger" type="button">Rejected</button>
+                                    <div class="collapse" id="collapseInvite4">
+                                        <div class="card card-body mt-2">
+                                            <p class="card-text">{{ request.description }}</p>
+                                            <p class="card-text">Niche: {{ request.niche }}</p>
+                                            <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                                See Profile
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-card-footer">
+                                    <p class="card-text">Payment: ${{ request.payment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>  
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+        {% else %}
+        <br><br><br>
+        <div class="row">
+            <div class="col-12 text-center">
+              <h1 style="color: black;">No Rejected Requests</h1>
             </div>
         </div>
         {% endif %}

@@ -19,7 +19,6 @@ class Influencer(db.Model, UserMixin):
     platforms = db.Column(db.String)
     category = db.Column(db.String)
     niche = db.Column(db.String)
-    reach = db.Column(db.Integer)
     flag = db.Column(db.Integer)
 
     def get_id(self):
@@ -48,6 +47,17 @@ class AdRequests(db.Model):
     payment = db.Column(db.Integer)
     status = db.Column(db.Integer)
     flag = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            'key': str(self.key),
+            'sponsor': str(self.sponsor),
+            'influencer': str(self.influencer),
+            'description': str(self.description),
+            'niche': str(self.niche),
+            'payment': str(self.payment),
+            'status': str(self.status)
+        }
 
 class Campaign(db.Model):
     __tablename__ = 'Campaign'

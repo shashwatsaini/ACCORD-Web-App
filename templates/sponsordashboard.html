@@ -47,6 +47,20 @@
         </nav>
     </div>
 
+    <div class="modal fade" id="adRequestModal" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adRequestModalLabel">Ad Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="adRequestModalBody">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% if campaigns[0] %}
     <br><br>
     <div class="container">
@@ -74,7 +88,8 @@
                                         {{ campaign.description }}
                                         <br><br>
                                         <p class="card-text">Goals: {{ campaign.goals }}</p>
-                                        <button class="btn btn-custom w-100 mt-2" type="button">
+                                        <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
+                                        data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                             View Ad Requests
                                         </button>
                                     </div>
@@ -131,7 +146,7 @@
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
-                                <h5 class="card-title">{{ campaign }}</h5>
+                                <h5 class="card-title">{{ campaign.name }}</h5>
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
@@ -190,7 +205,7 @@
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
-                                <h5 class="card-title">{{ campaign }}</h5>
+                                <h5 class="card-title">{{ campaign.name }}</h5>
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
@@ -261,7 +276,8 @@
                                             {{ campaign.description }}
                                             <br><br>
                                             <p class="card-text">Goals: {{ campaign.goals }}</p>
-                                            <button class="btn btn-custom w-100 mt-2" type="button">
+                                            <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
+                                        data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                                 View Ad Requests
                                             </button>
                                         </div>
@@ -366,6 +382,70 @@
                 }
             });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+        var adRequestModal = document.getElementById('adRequestModal');
+        adRequestModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var adRequests = JSON.parse(button.getAttribute('data-ad-requests'));
+            var modalBody = adRequestModal.querySelector('#adRequestModalBody');
+
+            modalBody.innerHTML = ''; 
+
+            if (adRequests.length === 0) {
+                modalBody.innerHTML = '<p>No ad requests available.</p>';
+                return;
+            }
+
+            adRequests.forEach(function(request, index) {
+                if (index % 2 === 0) {
+                    var row = document.createElement('div');
+                    row.className = 'row';
+                    modalBody.appendChild(row);
+                }
+
+                var requestStatus = '';
+                var buttonHTML = '';
+
+                if (request.status === '0') {
+                    requestStatus = 'Pending';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Pending</button>';
+                } else if (request.status === '1') {
+                    requestStatus = 'Rejected';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Rejected</button>';
+                } else if (request.status === '2') {
+                    requestStatus = 'Accepted';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Accepted</button>';
+                } else if (request.status === '3') {
+                    requestStatus = 'Completed, Pending Payment';
+                    buttonHTML = `<a href="/sponsor/payment/${request.key}" class="btn custom-btn-danger w-100">Completed, Pay Now  </a>`;
+                } else {
+                    requestStatus = 'Completed';
+                    buttonHTML = '<button class="btn custom-btn w-100">Completed</button>';
+                    
+                }
+
+                var requestCard = `
+                    <div class="col-md-6 ad-request-card">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Ad Request ${index + 1}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Influencer:</strong> ${request.influencer}</p>
+                                <p><strong>Description:</strong> ${request.description}</p>
+                                <p><strong>Niche:</strong> ${request.niche}</p>
+                                <p><strong>Payment:</strong> $${request.payment}</p>
+                                <br>
+                                ${buttonHTML}
+                            </div>
+                        </div>
+                    </div>`;
+                
+                modalBody.lastChild.insertAdjacentHTML('beforeend', requestCard);
+            });
+        });
+    });
+
     </script>
 </body>
 </html>
