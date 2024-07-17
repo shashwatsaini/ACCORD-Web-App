@@ -54,79 +54,12 @@
                     <h5 class="modal-title" id="adRequestModalLabel">Ad Request Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-6 ad-request-card">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Ad Request 1</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-1"></span></p>
-                                        <p><strong>Influencer:</strong> <span id="modal-influencer-1"></span></p>
-                                        <p><strong>Description:</strong> <span id="modal-description-1"></span></p>
-                                        <p><strong>Niche:</strong> <span id="modal-niche-1"></span></p>
-                                        <p><strong>Payment:</strong> $<span id="modal-payment-1"></span></p>
-                                        <p><strong>Status:</strong> <span id="modal-status-1"></span></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ad-request-card">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Ad Request 2</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
-                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
-                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
-                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
-                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
-                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 ad-request-card">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Ad Request 2</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
-                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
-                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
-                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
-                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
-                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 ad-request-card">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Ad Request 2</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p><strong>Sponsor:</strong> <span id="modal-sponsor-2"></span></p>
-                                        <p><strong>Influencer:</strong> <span id="modal-influencer-2"></span></p>
-                                        <p><strong>Description:</strong> <span id="modal-description-2"></span></p>
-                                        <p><strong>Niche:</strong> <span id="modal-niche-2"></span></p>
-                                        <p><strong>Payment:</strong> $<span id="modal-payment-2"></span></p>
-                                        <p><strong>Status:</strong> <span id="modal-status-2"></span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body" id="adRequestModalBody">
+                    <!-- Dynamic content will be inserted here -->
                 </div>
             </div>
         </div>
     </div>
-
-
 
     {% if campaigns[0] %}
     <br><br>
@@ -156,11 +89,9 @@
                                         <br><br>
                                         <p class="card-text">Goals: {{ campaign.goals }}</p>
                                         <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
-                                        data-sponsor="{{ campaign.sponsor }}" data-influencer="{{ campaign.influencer }}" data-description="{{ campaign.description }}"
-                                        data-niche="{{ campaign.niche }}" data-payment="{{ campaign.payment }}" data-status="{{ campaign.status }}">
+                                        data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                             View Ad Requests
                                         </button>
-
                                     </div>
                                 </div>
                                 <div class="card-footer text-body-secondary d-flex justify-content-between">
@@ -201,7 +132,7 @@
                 </a>
             </div>
         </div>
-
+        
         {% if influencer_requests[0] %}
         <br><br><br>
         <div class="row">
@@ -211,15 +142,15 @@
           <div class="col-12 text-center card-container">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    {% for request, campaign in influencer_requests %}
+                    {% for request, campaign, influencer in influencer_requests %}
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
-                                <h5 class="card-title">{{ campaign }}</h5>
+                                <h5 class="card-title">{{ campaign.name }}</h5>
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
-                                <h6 class="card-title">{{ request.influencer }}</h6>
+                                <h6 class="card-title">{{ influencer.name }}</h6>
                                 <hr>
                                 <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite1" aria-expanded="false" aria-controls="collapseInvite1">
                                     View
@@ -270,17 +201,17 @@
           <div class="col-12 text-center card-container">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    {% for request, campaign in past_influencer_requests %}
+                    {% for request, campaign, influencer in past_influencer_requests %}
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
-                                <h5 class="card-title">{{ campaign }}</h5>
+                                <h5 class="card-title">{{ campaign.name }}</h5>
                             </div>
                             <div class="custom-card-body">
                                 <p class="card-text">From</p>
-                                <h6 class="card-title">{{ request.influencer }}</h6>
+                                <h6 class="card-title">{{ influencer.name }}</h6>
                                 <hr>
-                                <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite1" aria-expanded="false" aria-controls="collapseInvite1">
+                                <button class="btn custom-btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite2" aria-expanded="false" aria-controls="collapseInvite1">
                                     View
                                 </button>
                                 {% if request.status == 2 %}
@@ -288,7 +219,7 @@
                                 {% else %}
                                 <button class="btn custom-btn-danger" type="button">Rejected</button>
                                 {% endif %}
-                                <div class="collapse" id="collapseInvite1">
+                                <div class="collapse" id="collapseInvite2">
                                     <div class="card card-body mt-2">
                                         <p class="card-text">{{ request.description }}</p>
                                         <p class="card-text">Niche: {{ request.niche }}</p>
@@ -346,8 +277,7 @@
                                             <br><br>
                                             <p class="card-text">Goals: {{ campaign.goals }}</p>
                                             <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
-                                            data-sponsor="{{ campaign.sponsor }}" data-influencer="{{ campaign.influencer }}" data-description="{{ campaign.description }}"
-                                            data-niche="{{ campaign.niche }}" data-payment="{{ campaign.payment }}" data-status="{{ campaign.status }}">
+                                        data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                                 View Ad Requests
                                             </button>
                                         </div>
@@ -389,6 +319,7 @@
             <p>&copy; 2024 Accord. All rights reserved.</p>
         </div>
     </footer>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -441,42 +372,80 @@
                 'gradient-3',
                 'gradient-4'
             ];
-
-            const cards = document.querySelectorAll('.custom-card');
+            
+            const cards = document.querySelectorAll('.custom-card'); 
 
             cards.forEach((card, index) => {
-                const header = card.querySelector('.custom-card-header');
+                const header = card.querySelector('.custom-card-header'); 
                 if (header) {
-                    header.classList.add(gradients[index % gradients.length]);
+                    header.classList.add(gradients[index % gradients.length]); 
                 }
             });
         });
         document.addEventListener('DOMContentLoaded', function() {
-            var adRequestModal = document.getElementById('adRequestModal');
-            adRequestModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var sponsor = button.getAttribute('data-sponsor');
-                var influencer = button.getAttribute('data-influencer');
-                var description = button.getAttribute('data-description');
-                var niche = button.getAttribute('data-niche');
-                var payment = button.getAttribute('data-payment');
-                var status = button.getAttribute('data-status');
+        var adRequestModal = document.getElementById('adRequestModal');
+        adRequestModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var adRequests = JSON.parse(button.getAttribute('data-ad-requests'));
+            var modalBody = adRequestModal.querySelector('#adRequestModalBody');
 
-                var modalSponsor = adRequestModal.querySelector('#modal-sponsor');
-                var modalInfluencer = adRequestModal.querySelector('#modal-influencer');
-                var modalDescription = adRequestModal.querySelector('#modal-description');
-                var modalNiche = adRequestModal.querySelector('#modal-niche');
-                var modalPayment = adRequestModal.querySelector('#modal-payment');
-                var modalStatus = adRequestModal.querySelector('#modal-status');
+            modalBody.innerHTML = ''; 
 
-                modalSponsor.textContent = sponsor;
-                modalInfluencer.textContent = influencer;
-                modalDescription.textContent = description;
-                modalNiche.textContent = niche;
-                modalPayment.textContent = payment;
-                modalStatus.textContent = status;
+            if (adRequests.length === 0) {
+                modalBody.innerHTML = '<p>No ad requests available.</p>';
+                return;
+            }
+
+            adRequests.forEach(function(request, index) {
+                if (index % 2 === 0) {
+                    var row = document.createElement('div');
+                    row.className = 'row';
+                    modalBody.appendChild(row);
+                }
+
+                var requestStatus = '';
+                var buttonHTML = '';
+
+                if (request.status === '0') {
+                    requestStatus = 'Pending';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Pending</button>';
+                } else if (request.status === '1') {
+                    requestStatus = 'Rejected';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Rejected</button>';
+                } else if (request.status === '2') {
+                    requestStatus = 'Accepted';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Accepted</button>';
+                } else if (request.status === '3') {
+                    requestStatus = 'Completed, Pending Payment';
+                    buttonHTML = `<a href="/sponsor/payment/${request.key}" class="btn custom-btn-danger w-100">Completed, Pay Now  </a>`;
+                } else {
+                    requestStatus = 'Completed';
+                    buttonHTML = '<button class="btn custom-btn w-100">Completed</button>';
+                    
+                }
+
+                var requestCard = `
+                    <div class="col-md-6 ad-request-card">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Ad Request ${index + 1}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Influencer:</strong> ${request.influencer}</p>
+                                <p><strong>Description:</strong> ${request.description}</p>
+                                <p><strong>Niche:</strong> ${request.niche}</p>
+                                <p><strong>Payment:</strong> $${request.payment}</p>
+                                <br>
+                                ${buttonHTML}
+                            </div>
+                        </div>
+                    </div>`;
+                
+                modalBody.lastChild.insertAdjacentHTML('beforeend', requestCard);
             });
         });
+    });
+
     </script>
 </body>
 </html>
