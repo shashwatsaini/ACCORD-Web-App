@@ -61,6 +61,39 @@
         </div>
     </div>
 
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="profileModalBody">
+                    <p><strong>Name:</strong><!--Dynamic content--></p>
+                    <p><strong>Bio:</strong><!--Dynamic content--></p>
+                    <p><strong>Platforms:</strong><!--Dynamic content--></p>
+                    <p><strong>Category:</strong><!--Dynamic content--></p>
+                    <p><strong>Niche:</strong><!--Dynamic content--></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="negotiateModal" tabindex="-1" aria-labelledby="negotiateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="negotiateModalLabel">Negotiate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="adRequestModalBody">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% if campaigns[0] %}
     <br><br>
     <div class="container">
@@ -132,7 +165,7 @@
                 </a>
             </div>
         </div>
-        
+
         {% if influencer_requests[0] %}
         <br><br><br>
         <div class="row">
@@ -161,12 +194,11 @@
                                     <div class="card card-body mt-2">
                                         <p class="card-text">{{ request.description }}</p>
                                         <p class="card-text">Niche: {{ request.niche }}</p>
-                                        <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                        <button class="btn custom-btn-warning w-100 mt-2 profile-btn" type="button" data-bs-toggle="modal" data-bs-target="#profileModal">
                                             See Profile
                                         </button>
-                                        <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                        <button class="btn custom-btn-warning w-100 mt-2 negotiate-btn" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal">
                                             Negotiate
-                                            <!-- Add logic to transfer influencer request to sponsor request -->
                                         </button>
                                     </div>
                                 </div>
