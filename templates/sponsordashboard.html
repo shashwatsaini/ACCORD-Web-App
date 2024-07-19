@@ -132,7 +132,59 @@
                 </a>
             </div>
         </div>
-        
+
+        <!-- See Profile Popup -->
+        {% if influencer_requests[0] %}
+        {% for request, campaign, influencer in influencer_requests %}
+        <div class="modal fade" id="profileModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="profileModalLabel{{ loop.index0 }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content curved-modal">
+                    <div class="modal-header curved-modal-header">
+                        <div class="col-8 text-left">
+                            <h3 class="m-0" style="text-align: left; padding-left: 0px;">{{ influencer.name }}</h3>
+                        </div>
+                        <div class="col-4 text-center">
+                            <img src="{{ url_for('static', filename='influencer-logo.png') }}" class="img-fluid w-100" style="width: 15%;">
+                        </div>
+                    </div>
+                    <div class="modal-body" id="profileModalBody{{ loop.index0 }}">
+                        <p><strong>Bio: </strong>{{ influencer.bio }}</p>
+                        <p><strong>Platforms: </strong>{{ influencer.platforms }}</p>
+                        <p><strong>Category: </strong>{{ influencer.category }}</p>
+                        <p><strong>Niche: </strong>{{ influencer.niche }}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <div>
+                            <p>The license into Accord.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Negotiate Popup -->
+        <div class="modal fade" id="negotiateModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="negotiateModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="negotiateModalLabel">Negotiate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="adRequestModalBody">
+                        <p><strong>Original Offer: $</strong>{{ request.payment }}</p>
+                        <form action="/sponsor/influencer-requests/negotiate/{{ request.key }}" method="POST">
+                            <label for="customRange1" class="form-label"><strong>Your Offer</strong></label>
+                            <input type="range" min="1" max="10000" value="1000" class="form-range customRange" oninput="updateInputField(this.value, {{ loop.index0 }})">
+                            <input type="number" class="form-control mt-2 rangeValueInput" value="1000" name="new_payment" oninput="updateSlider(this.value, {{ loop.index0 }})">
+                            <br><br>
+                            <button type="submit" class="btn custom-btn-danger">Submit</button>
+                        </form>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
         {% if influencer_requests[0] %}
         <br><br><br>
         <div class="row">
@@ -161,12 +213,11 @@
                                     <div class="card card-body mt-2">
                                         <p class="card-text">{{ request.description }}</p>
                                         <p class="card-text">Niche: {{ request.niche }}</p>
-                                        <button class="btn custom-btn-warning w-100 mt-2" type="button">
-                                            See Profile
+                                        <button class="btn custom-btn-warning w-100 mt-2 profile-btn" type="button" data-bs-toggle="modal" data-bs-target="#profileModal{{ loop.index0 }}">
+                                            See profile
                                         </button>
-                                        <button class="btn custom-btn-warning w-100 mt-2" type="button">
+                                        <button class="btn custom-btn-warning w-100 mt-2 negotiate-btn" type="button" data-bs-toggle="modal" data-bs-target="#negotiateModal{{ loop.index0 }}">
                                             Negotiate
-                                            <!-- Add logic to transfer influencer request to sponsor request -->
                                         </button>
                                     </div>
                                 </div>
@@ -326,6 +377,15 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script>
+        function updateInputField(value, index) {
+            const inputFields = document.querySelectorAll('.rangeValueInput');
+            inputFields[index].value = value;
+        }
+
+        function updateSlider(value, index) {
+            const sliders = document.querySelectorAll('.customRange');
+            sliders[index].value = value;
+        }
         var swiper = new Swiper('.swiper-container', {
             slidesPerView: 1,
             spaceBetween: 10,

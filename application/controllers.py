@@ -166,6 +166,19 @@ def reject_sponsor_request(key):
     db.session.commit()
     return redirect(url_for('influencer_dashboard'))
 
+@app.route('/influencer/sponsor-requests/negotiate/<int:key>', methods=['GET', 'POST'])
+def negotiate_sponsor_request(key):
+    if request.method == 'POST':
+        payment = int(request.form.get('new_payment'))
+
+        sponsor_request = SponsorRequests.query.get(key)
+        sponsor_request.payment = payment
+        influencer_request = InfluencerRequests(influencer=sponsor_request.influencer, sponsor=sponsor_request.sponsor, campaign=sponsor_request.campaign, description=sponsor_request.description, niche=sponsor_request.niche, payment=payment, status=0)
+        db.session.add(influencer_request)
+        db.session.delete(sponsor_request)
+        db.session.commit()
+        return redirect(url_for('influencer_dashboard'))
+
 @app.route('/sponsor/dashboard', methods=['GET', 'POST'])
 #@login_required
 def sponsor_dashboard():
@@ -308,6 +321,19 @@ def reject_influencer_request(key):
     request.status = 1
     db.session.commit()
     return redirect(url_for('sponsor_dashboard'))
+
+@app.route('/sponsor/influencer-requests/negotiate/<int:key>', methods=['GET', 'POST'])
+def negotiate_influencer_request(key):
+    if request.method == 'POST':
+        payment = int(request.form.get('new_payment'))
+
+        influencer_request = InfluencerRequests.query.get(key)
+        influencer_request.payment = payment
+        sponsor_request = SponsorRequests(influencer=influencer_request.influencer, sponsor=influencer_request.sponsor, campaign=influencer_request.campaign, description=influencer_request.description, niche=influencer_request.niche, payment=payment, status=0)
+        db.session.add(sponsor_request)
+        db.session.delete(influencer_request)
+        db.session.commit()
+        return redirect(url_for('sponsor_dashboard'))
 
 @app.route('/sponsor/payment/<int:key>', methods=['GET', 'POST'])
 #@login_required
