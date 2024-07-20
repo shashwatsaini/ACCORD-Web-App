@@ -271,3 +271,30 @@ input::placeholder {
     color: white;
     background: linear-gradient(0deg, #FF5733, #FF8C6B);
 }
+
+
+.modal-header {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+}
+
+.curved-modal-header {
+    border-top-left-radius: 20px; /* Curved top-left corner */
+    border-top-right-radius: 20px; /* Curved top-right corner */
+    background-color: red; /* Ensure header background color blends */
+}
+
+.curved-modal {
+    border-radius: 20px; /* Curved all corners */
+    overflow: hidden; /* Ensure content stays within rounded borders */
+    margin-top: 20%;
+}
+
+.modal-content {
+    background-color: white; /* Ensure modal background is white */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow to enhance the curved effect */
+}
+
+.modal-header .btn-close {
+    margin-right: -10px; /* Adjust button position if necessary */
+}
