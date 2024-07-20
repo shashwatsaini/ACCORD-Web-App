@@ -1,6 +1,7 @@
 .header{
-    font-size: 100px;
-    font-weight: bold;
+    font-size: 50px;
+    font-family: "Domine", serif;
+    margin-top: 30px;
 }
 
 
@@ -45,13 +46,7 @@
     text-align: center;
     padding: 1rem;
 }
-.progress {
-    height: 20px;
-    border-radius: 10px;
-}
-.progress-bar {
-    background-color: #FF5733;
-}
+
 .btn-custom {
     background: linear-gradient(135deg, #FF5733, #FF8C6B);
     color: white;
@@ -64,4 +59,8 @@
 }
 .btn {
     margin: 0.2rem;
+}
+
+.card-container{
+    margin-top: 50px;
 }

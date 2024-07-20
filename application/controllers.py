@@ -138,6 +138,11 @@ def influencer_profile():
     ad_requests_completed = db.session.query(AdRequests).filter(AdRequests.influencer==current_user.username, AdRequests.status==4).count()
     return render_template('influencerprofile.html', influencer=influencer, ad_requests_completed=ad_requests_completed)
 
+@app.route('/sponsor/find', methods=['GET','POST'])
+#@login_required
+def sponsor_find():
+    return render_template('sponsorsearch.html')
+
 @app.route('/influencer/ad-requests/mark-as-done/<int:key>', methods=['GET'])
 #@login_required
 def complete_ad_request(key):
