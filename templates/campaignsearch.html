@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='title-logo.png') }}" type="image">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="nav-container">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid px-5">
+                <img class="navbar-brand img-fluid" src="{{ url_for('static', filename='influencer-logo.png') }}" style="width: 15%;" />
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('influencer_profile')}}'">Profile</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('influencer_dashboard')}}'">Ad Requests</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('campaign_find')}}'">Find Campaigns</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Stats</button>
+                        </li>
+                    </ul>
+                    <form action="{{ url_for('logout') }}">
+                    <button class="btn btn-outline-danger logout-btn" type="submit">Log out</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container">
+        <div class="row text-center">
+            <h1 class="header">Find Campaigns</h1>
+        </div>
+        
+        {% if campaigns[0] %}
+            {% for campaign, sponsor, campaign_count, adrequest_count in campaigns %}
+            <!-- See Profile Popup -->
+            <div class="modal fade" id="profileModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="profileModalLabel{{ loop.index0 }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                    <div class="modal-content curved-modal">
+                        <div class="modal-header curved-modal-header">
+                            <div class="col-8 text-left">
+                                <h3 class="m-0" style="text-align: left; padding-left: 0px;">{{ sponsor.company }}</h3>
+                            </div>
+                            <div class="col-4 text-center">
+                                <img src="{{ url_for('static', filename='sponsor-logo.png') }}" class="img-fluid w-100" style="width: 12    %;">
+                            </div>
+                        </div>
+                        <div class="modal-body" id="profileModalBody{{ loop.index0 }}">
+                            <p><strong>Bio: </strong>{{ sponsor.bio }}</p>
+                            <p><strong>Industry: </strong>{{ sponsor.industry }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div class="pi-3" style="text-align: left;">
+                                <span><strong>Campaigns Completed:</strong> {{ campaign_count }}</span><br>
+                                <span><strong>Ad Requests Completed:</strong> {{ adrequest_count }}</span>
+                            </div>
+                            <div class="text-right">
+                                <p>Your license into Accord.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send Request Popup -->
+            <div class="modal fade" id="adRequestModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="adRequestModalLabel{{ loop.index0 }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adRequestModalLabel{{ loop.index0 }}">Send Ad Request</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="adRequestModalBody{{ loop.index0 }}">
+                            <form action="{{ url_for('create_influencer_request') }}" method="POST">
+                                <input type="hidden" name="sponsor-username" value="{{ sponsor.username }}">
+                                <input type="hidden" name="campaign" value="{{ campaign.key }}">
+
+                                <div class="mb-3">
+                                    <label for="influencer" class="form-label"><strong>Sponsor</strong></label>
+                                    <input type="text" class="form-control" id="sponsor" name="sponsor" value="{{ sponsor.company }}" readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="campaign" class="form-label"><strong>Campaign</strong></label>
+                                    <input type="text" class="form-control" id="campaign-name" name="campaign-name" value="{{ campaign.name }}" readonly>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="description" class="form-label"><strong>Description</strong></label>
+                                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter your ad request description"></textarea>
+                                </div>
+            
+                                <div class="mb-3">
+                                    <label for="niche" class="form-label"><strong>Niche</strong></label>
+                                    <select class="form-select" id="niche" name="niche" aria-label="Select niche">
+                                        <option value="" disabled selected>Select a niche</option>
+                                        <option value="blogging">Blogging</option>
+                                        <option value="vlogging">Vlogging</option>
+                                        <option value="tutorials">Tutorials</option>
+                                        <option value="reels">Reels</option>
+                                        <option value="music">Music</option>
+                                        <option value="photography">Photography</option>
+                                        <option value="journalism">Journalism</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="payment" class="form-label"><strong>Payment Offer ($)</strong></label>
+                                    <input type="number" class="form-control" id="payment" name="payment" min="1" placeholder="Enter your payment offer">
+                                </div>
+            
+                                <button type="submit" class="btn btn-custom">Send Request</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row justify-content-center">
+            {% if campaigns[0] %}
+                {% for campaign, sponsor, campaign_count, adrequest_count in campaigns %}
+                <div class="col-md-6 card-container mb-4">
+                    <div class="card" style="width: 30rem;">
+                        <div class="card-header">
+                            <h5 class="card-title"><strong>{{ sponsor.company }}: {{ campaign.name }}</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <br>
+                                <p class="card-text">Description: <strong>{{ campaign.description }}</strong></p>
+                                <p class="card-text">Progress: <span class="badge bg-success">{{ campaign.progress }}%</span></p>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ campaign.progress }}%;" aria-valuenow="{{ campaign.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                <p class="card-text">Budget: ${{ campaign.budget }}</p>
+                                <p class="card-text">Goals: {{ campaign.goals }}</p>
+                                <br>
+                                <button class="btn btn-custom w-100 mt-2 collab-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal{{ loop.index0 }}">
+                                    Send a Request
+                                </button>
+                                <button class="btn btn-custom w-100 mt-2 licence-btn" type="button" data-bs-toggle="modal" data-bs-target="#profileModal{{ loop.index0 }}">
+                                    See Profile
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer text-body-secondary d-flex justify-content-between">
+                            <div>
+                                {{ campaign.start_date }}
+                            </div>
+                            <div style="color: #FF5733;">
+                                {{ campaign.end_date }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="col-md-6 card-container mb-4">
+                <div class="col-12 text-center">
+                    <h1 style="color: black;">No Campaigns Found.</h1>
+                    <br>    
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+
+    <footer class="footer text-white text-center">
+        <div class="container">
+            <br>
+            <p>&copy; 2024 Accord. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

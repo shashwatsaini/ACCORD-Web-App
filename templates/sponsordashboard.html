@@ -135,7 +135,7 @@
 
         <!-- See Profile Popup -->
         {% if influencer_requests[0] %}
-        {% for request, campaign, influencer in influencer_requests %}
+        {% for request, campaign, influencer, adrequest_count in influencer_requests %}
         <div class="modal fade" id="profileModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="profileModalLabel{{ loop.index0 }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content curved-modal">
@@ -154,7 +154,8 @@
                         <p><strong>Niche: </strong>{{ influencer.niche }}</p>
                     </div>
                     <div class="card-footer d-flex justify-content-between">
-                        <div>
+                        <div style="text-align: left;">
+                            <p><b>Ad Requests Completed: {{ adrequest_count }}</b></p>
                             <p>The license into Accord.</p>
                         </div>
                     </div>
@@ -194,7 +195,7 @@
           <div class="col-12 text-center card-container">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    {% for request, campaign, influencer in influencer_requests %}
+                    {% for request, campaign, influencer, adrequest_count in influencer_requests %}
                     <div class="swiper-slide d-flex">
                         <div class="custom-card" style="width: 30rem;">
                             <div class="custom-card-header">
@@ -415,7 +416,7 @@
 
         $(document).ready(function(){
             var cardCount = $('.swiper-slide').length;
-            if(cardCount < 3) {
+            if(cardCount < 2) {
                 swiper.destroy();
             }
         });
