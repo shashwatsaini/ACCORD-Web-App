@@ -33,7 +33,7 @@
                             <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('influencer_dashboard')}}'">Ad Requests</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Find Campaigns</button>
+                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('campaign_find')}}'">Find Campaigns</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Stats</button>
@@ -82,9 +82,15 @@
                                                 <div class="progress mb-3">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ campaign.progress }}%;" aria-valuenow="{{ campaign.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
+                                                {% if ad.status == 2 %}
                                                 <button class="btn custom-btn-danger" type="button" onclick="location.href='{{ url_for('complete_ad_request', key=ad.key) }}'">
                                                     Mark as Completed
                                                 </button>
+                                                {% else %}
+                                                <button class="btn custom-btn-danger" type="button" disabled>
+                                                    Completed, Awaiting Payment
+                                                </button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -383,7 +389,7 @@
 
         $(document).ready(function(){
             var cardCount = $('.swiper-slide').length;
-            if(cardCount < 3) {
+            if(cardCount < 2) {
                 swiper.destroy();
             }
         });

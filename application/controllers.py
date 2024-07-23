@@ -71,7 +71,7 @@ def influencer_registration():
         elif Sponsor.query.filter_by(username=username).first():
             return render_template('influencerregister.html', username_exists=True)
         else:
-            influencer = Influencer(username=username, name=name, bio=bio, password=password, platforms=platforms, category=category, niche=niche, reach=0, flag=0)
+            influencer = Influencer(username=username, name=name, bio=bio, password=password, platforms=platforms, category=category, niche=niche, flag=0)
             db.session.add(influencer)
             db.session.commit()
             return redirect(url_for('login'))        
@@ -105,28 +105,28 @@ def influencer_dashboard():
             db.session.query(AdRequests, Campaign, Sponsor)
             .join(Campaign, AdRequests.campaign == Campaign.key)
             .join(Sponsor, Campaign.sponsor == Sponsor.username)
-            .filter(AdRequests.influencer == 'influencer', AdRequests.status < 3)
+            .filter(AdRequests.influencer == current_user.username, AdRequests.status <= 3)
             .all()[::-1]
         )
         sponsor_requests = (
             db.session.query(SponsorRequests, Campaign, Sponsor)
             .join(Campaign, SponsorRequests.campaign == Campaign.key)
             .join(Sponsor, SponsorRequests.sponsor == Sponsor.username)
-            .filter(SponsorRequests.influencer == 'influencer', SponsorRequests.status == 0)
+            .filter(SponsorRequests.influencer == current_user.username, SponsorRequests.status == 0)
             .all()[::-1]
         )
         completed_requests = (
             db.session.query(AdRequests, Campaign, Sponsor)
             .join(Campaign, AdRequests.campaign == Campaign.key)
             .join(Sponsor, Campaign.sponsor == Sponsor.username)
-            .filter(AdRequests.influencer == 'influencer', AdRequests.status >= 3)
+            .filter(AdRequests.influencer == current_user.username, AdRequests.status >= 3)
             .all()[::-1]
         )
         past_sponsor_requests = (
             db.session.query(SponsorRequests, Campaign, Sponsor)
             .join(Campaign, SponsorRequests.campaign == Campaign.key)
             .join(Sponsor, SponsorRequests.sponsor == Sponsor.username)
-            .filter(SponsorRequests.influencer == 'influencer', SponsorRequests.status == 1)
+            .filter(SponsorRequests.influencer == current_user.username, SponsorRequests.status == 1)
             .all()[::-1]
         )
         return render_template('influencerdashboard.html', ads_campaigns=ads_campaigns, completed_requests=completed_requests, sponsor_requests=sponsor_requests, past_sponsor_requests=past_sponsor_requests)
@@ -137,6 +137,34 @@ def influencer_profile():
     influencer = Influencer.query.get(current_user.username)
     ad_requests_completed = db.session.query(AdRequests).filter(AdRequests.influencer==current_user.username, AdRequests.status==4).count()
     return render_template('influencerprofile.html', influencer=influencer, ad_requests_completed=ad_requests_completed)
+
+@app.route('/influencer/find', methods=['GET','POST'])
+#@login_required
+def campaign_find():
+    if request.method == 'GET':
+        campaign_count = db.session.query(db.func.count(Campaign.key)).filter(Campaign.progress == 100).label('campaign_count')
+        adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
+        campaigns = (
+            db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
+            .filter(Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
+            .all()
+        )
+        return render_template('campaignsearch.html', campaigns=campaigns)
+
+@app.route('/influencer/sponsor-requests/create', methods=['GET', 'POST'])
+#@login_required
+def create_influencer_request():
+    if request.method == 'POST':
+        sponsor = request.form.get('sponsor-username')
+        campaign = request.form.get('campaign')
+        description = request.form.get('description')
+        niche = request.form.get('niche')
+        payment = request.form.get('payment')
+
+        influencer_request = InfluencerRequests(influencer=current_user.username, sponsor=sponsor, campaign=campaign, description=description, niche=niche, payment=payment, status=0)
+        db.session.add(influencer_request)
+        db.session.commit()
+        return redirect(url_for('influencer_dashboard'))
 
 @app.route('/influencer/ad-requests/mark-as-done/<int:key>', methods=['GET'])
 #@login_required
@@ -219,10 +247,25 @@ def sponsor_dashboard():
                 past_ad_requests_by_campaign[ad_request.campaign] = []
             past_ad_requests_by_campaign[ad_request.campaign].append(ad_request)
 
+        # Gets ad requests completed for each influencer
+        adrequest_subquery = (
+        db.session.query(
+                AdRequests.influencer.label('influencer'),
+                db.func.count(AdRequests.status).filter(AdRequests.status == 4).label('adrequest_count'),
+            )
+            .group_by(AdRequests.influencer)
+            .subquery()
+        )
         influencer_requests = (
-            db.session.query(InfluencerRequests, Campaign, Influencer)
+            db.session.query(
+                InfluencerRequests,
+                Campaign,
+                Influencer,
+                adrequest_subquery.c.adrequest_count
+            )
             .join(Campaign, InfluencerRequests.campaign == Campaign.key)
             .join(Influencer, InfluencerRequests.influencer == Influencer.username)
+            .outerjoin(adrequest_subquery, InfluencerRequests.influencer == adrequest_subquery.c.influencer)
             .filter(InfluencerRequests.sponsor == 'sponsor', InfluencerRequests.status == 0)
             .all()[::-1]
         )
@@ -241,7 +284,6 @@ def sponsor_dashboard():
             else:
                 campaign.progress = int((datetime.now().date() - campaign.start_date).days / (campaign.end_date - campaign.start_date).days * 100)
                 db.session.commit()
-        # Add logic to negotiation, view ad requests
 
         serialized_campaigns = []
         for campaign in campaigns:
@@ -273,6 +315,93 @@ def sponsor_dashboard():
 
         return render_template('sponsordashboard.html', campaigns=serialized_campaigns, past_campaigns = serialized_past_campaigns, influencer_requests=influencer_requests, past_influencer_requests=past_influencer_requests)
 
+@app.route('/sponsor/find', methods=['GET','POST'])
+#@login_required
+def sponsor_find():
+    if request.method == 'GET':
+        if request.args.get('category') and request.args.get('niche'):
+            category = request.args.get('category')
+            niche = request.args.get('niche')
+             # Gets ad requests completed for each influencer
+            adrequest_subquery = (
+                db.session.query(
+                        AdRequests.influencer.label('influencer'),
+                        db.func.count(AdRequests.status).filter(AdRequests.status == 4).label('adrequests_count')
+                    )
+                    .group_by(AdRequests.influencer)
+                    .subquery()
+            )
+            influencers = (
+                db.session.query(
+                    Influencer,
+                    adrequest_subquery.c.adrequests_count
+                )
+                .filter(Influencer.category == category, Influencer.niche == niche)
+                .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+                .all()
+            )
+        elif request.args.get('category'):
+            category = request.args.get('category')
+             # Gets ad requests completed for each influencer
+            adrequest_subquery = (
+                db.session.query(
+                        AdRequests.influencer.label('influencer'),
+                        db.func.count(AdRequests.status).filter(AdRequests.status == 4).label('adrequests_count')
+                    )
+                    .group_by(AdRequests.influencer)
+                    .subquery()
+            )
+            influencers = (
+                db.session.query(
+                    Influencer,
+                    adrequest_subquery.c.adrequests_count
+                )
+                .filter(Influencer.category == category)
+                .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+                .all()
+            )
+        elif request.args.get('niche'):
+            niche = request.args.get('niche')
+             # Gets ad requests completed for each influencer
+            adrequest_subquery = (
+                db.session.query(
+                        AdRequests.influencer.label('influencer'),
+                        db.func.count(AdRequests.status).filter(AdRequests.status == 4).label('adrequests_count')
+                    )
+                    .group_by(AdRequests.influencer)
+                    .subquery()
+            )
+            influencers = (
+                db.session.query(
+                    Influencer,
+                    adrequest_subquery.c.adrequests_count
+                )
+                .filter(Influencer.niche == niche)
+                .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+                .all()
+            )
+        else:
+            # Gets ad requests completed for each influencer
+            adrequest_subquery = (
+                db.session.query(
+                        AdRequests.influencer.label('influencer'),
+                        db.func.count(AdRequests.status).filter(AdRequests.status == 4).label('adrequests_count')
+                    )
+                    .group_by(AdRequests.influencer)
+                    .subquery()
+            )
+            influencers = (
+                db.session.query(
+                    Influencer,
+                    adrequest_subquery.c.adrequests_count
+                )
+                .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+                .all()
+            )
+        campaigns = Campaign.query.filter(Campaign.sponsor == 'sponsor').all()
+        return render_template('sponsorsearch.html', influencers=influencers, campaigns=campaigns)
+    return render_template('sponsorsearch.html')
+
 @app.route('/sponsor/profile', methods=['GET'])
 #@login_required
 def sponsor_profile():
@@ -299,6 +428,21 @@ def create_campaign():
 
         campaign = Campaign(sponsor=current_user.username, name=name, description=description, progress=0, start_date=start_date, end_date=end_date, budget=budget, goals=goals, flag=0)
         db.session.add(campaign)
+        db.session.commit()
+        return redirect(url_for('sponsor_dashboard'))
+
+@app.route('/sponsor/influencer-requests/create', methods=['GET', 'POST'])
+#@login_required
+def create_sponsor_request():
+    if request.method == 'POST':
+        influencer = request.form.get('influencer-username')
+        campaign = request.form.get('campaign')
+        description = request.form.get('description')
+        niche = request.form.get('niche')
+        payment = request.form.get('payment')
+
+        sponsor_request = SponsorRequests(influencer=influencer, sponsor=current_user.username, campaign=campaign, description=description, niche=niche, payment=payment, status=0)
+        db.session.add(sponsor_request)
         db.session.commit()
         return redirect(url_for('sponsor_dashboard'))
 
