@@ -142,14 +142,25 @@ def influencer_profile():
 #@login_required
 def campaign_find():
     if request.method == 'GET':
-        campaign_count = db.session.query(db.func.count(Campaign.key)).filter(Campaign.progress == 100).label('campaign_count')
-        adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
-        campaigns = (
-            db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
-            .filter(Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
-            .all()
-        )
-        return render_template('campaignsearch.html', campaigns=campaigns)
+        if request.args.get('niche'):
+            niche = request.args.get('niche')
+            campaign_count = db.session.query(db.func.count(Campaign.key)).filter(Campaign.progress == 100).label('campaign_count')
+            adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
+            campaigns = (
+                db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
+                .filter(Campaign.niche == niche, Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
+                .all()
+            )
+            return render_template('campaignsearch.html', campaigns=campaigns)
+        else:
+            campaign_count = db.session.query(db.func.count(Campaign.key)).filter(Campaign.progress == 100).label('campaign_count')
+            adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
+            campaigns = (
+                db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
+                .filter(Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
+                .all()
+            )
+            return render_template('campaignsearch.html', campaigns=campaigns)
 
 @app.route('/influencer/sponsor-requests/create', methods=['GET', 'POST'])
 #@login_required
@@ -289,8 +300,10 @@ def sponsor_dashboard():
         for campaign in campaigns:
             campaign_requests = ad_requests_by_campaign.get(campaign.key, [])
             serialized_campaigns.append({
+                'key': campaign.key,
                 'name': campaign.name,
                 'description': campaign.description,
+                'niche': campaign.niche,
                 'progress': campaign.progress,
                 'goals': campaign.goals,
                 'start_date': campaign.start_date,
@@ -304,6 +317,7 @@ def sponsor_dashboard():
             serialized_past_campaigns.append({
                 'name': campaign.name,
                 'description': campaign.description,
+                'niche': campaign.niche,
                 'progress': campaign.progress,
                 'goals': campaign.goals,
                 'start_date': campaign.start_date,
@@ -418,6 +432,7 @@ def create_campaign():
     else:
         name = request.form.get('campaign_name')
         description = request.form.get('description')
+        niche = request.form.get('niche')
         start_date = request.form.get('start_date')
         end_date = request.form.get('end_date')
         budget = request.form.get('budget')
@@ -426,10 +441,75 @@ def create_campaign():
         start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
-        campaign = Campaign(sponsor=current_user.username, name=name, description=description, progress=0, start_date=start_date, end_date=end_date, budget=budget, goals=goals, flag=0)
+        campaign = Campaign(sponsor=current_user.username, name=name, description=description, niche=niche, progress=0, start_date=start_date, end_date=end_date, budget=budget, goals=goals, flag=0)
         db.session.add(campaign)
         db.session.commit()
         return redirect(url_for('sponsor_dashboard'))
+
+@app.route('/sponsor/modify-campaign/<int:key>', methods=['GET', 'POST'])
+#@login_required
+def modify_campaign(key):
+    if request.method == 'GET':
+        campaign = Campaign.query.get(key)
+        return render_template('modifycampaign.html', company_name='microsoft', campaign=campaign)
+    else:
+        name = request.form.get('campaign_name')
+        description = request.form.get('description')
+        niche = request.form.get('niche')
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date')
+        budget = request.form.get('budget')
+        goals = request.form.get('goals')
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        campaign = Campaign.query.get(key)
+        campaign.name = name
+        campaign.description = description
+        campaign.niche = niche
+        campaign.start_date = start_date
+        campaign.end_date = end_date
+        campaign.budget = budget
+        campaign.goals = goals
+        db.session.commit()
+        return redirect(url_for('sponsor_dashboard'))
+
+@app.route('/sponsor/delete-campaign/<int:key>', methods=['GET'])
+#@login_required
+def delete_campaign(key):
+    campaign = Campaign.query.get(key)
+
+    adrequests = AdRequests.query.filter(AdRequests.campaign == key).all()
+    for adrequest in adrequests:
+        db.session.delete(adrequest)
+
+    infuencer_requests = InfluencerRequests.query.filter(InfluencerRequests.campaign == key).all()
+    for influencer_request in infuencer_requests:
+        db.session.delete(influencer_request)
+    
+    sponsor_requests = SponsorRequests.query.filter(SponsorRequests.campaign == key).all()
+    for sponsor_request in sponsor_requests:
+        db.session.delete(sponsor_request)
+
+    db.session.delete(campaign)
+    db.session.commit()
+    return redirect(url_for('sponsor_dashboard'))
+
+@app.route('/sponsor/ad-requests/modify/<int:key>', methods=['POST'])
+#@login_required
+def modify_ad_request(key):
+    if request.method == 'POST':
+        description = request.form.get('description')
+        niche = request.form.get('niche')
+        payment = request.form.get('payment')
+        ad_request = AdRequests.query.get(key)
+        ad_request.description = description
+        ad_request.niche = niche
+        ad_request.payment = payment
+        db.session.commit()
+        return redirect(url_for('sponsor_dashboard'))
+
 
 @app.route('/sponsor/influencer-requests/create', methods=['GET', 'POST'])
 #@login_required

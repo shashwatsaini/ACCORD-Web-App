@@ -41,23 +41,24 @@
 
     <div class="container">
         <div class="row text-center">
-            <h1>Hi {{ company_name }}, let's create a Campaign.</h1>
+            <h1>Hi {{ company_name }}, let's modify {{ campaign.name }}.</h1>
         </div>
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 form-container" style="background-color: white;">
-                <form action="{{ url_for('create_campaign') }}" method="POST">
+                <form action="/sponsor/modify-campaign/{{ campaign.key }}" method="POST">
+                    <input type="hidden" name="campaign_key" value="{{ campaign.key }}">
                     <div class="form-group">
                         <label for="CampaignName">Campaign Name</label>
-                        <input type="text" class="form-control" id="CampaignName" name="campaign_name" placeholder="Give your campaign a name." required>
+                        <input type="text" class="form-control" id="CampaignName" name="campaign_name" value="{{ campaign.name }}" placeholder="Give your campaign a name." required>
                     </div>
                     <div class="form-group">
                         <label for="InputDescription">Description</label>
-                        <textarea type="text" class="form-control" id="InputDescription" placeholder="Tell us about the campaign." name="description" required></textarea>
+                        <textarea type="text" class="form-control" id="InputDescription" placeholder="Tell us about the campaign." name="description" required>{{ campaign.description }}</textarea>
                     </div>
                     <div class="form-group">
-                        <label for="filterNiche">Select niche</label>  
-                        <select class="form-select form-select" id="filterNiche" name="niche" aria-label="Select niche">
-                            <option value="">All niches</option>
+                        <label for="filterNiche">Select niche</label>
+                        <select class="form-select" id="filterNiche" name="niche" aria-label="Select niche">
+                            <option value="{{ campaign.niche }}">Currently: {{ campaign.niche }}</option>
                             <option value="Blogging">Blogging</option>
                             <option value="Vlogging">Vlogging</option>
                             <option value="Tutorials">Tutorials</option>
@@ -69,25 +70,29 @@
                     </div>
                     <div class="form-group">
                         <label for="InputStartDate">Start Date</label>
-                        <input type="date" class="form-control" id="InputStartDate" name="start_date" required>
+                        <input type="date" class="form-control" id="InputStartDate" value="{{ campaign.start_date }}" name="start_date" required>
                     </div>
                     <div class="form-group">
                         <label for="InputStartDate">End Date</label>
-                        <input type="date" class="form-control" id="InputEndDate" name="end_date" required>
+                        <input type="date" class="form-control" id="InputEndDate" value="{{ campaign.end_date }}" name="end_date" required>
                     </div>
                     <div class="form-group">
                         <label for="InputBudget">Budget</label>
-                        <input type="number" class="form-control" id="InputBudget" name="budget" placeholder="The budget you have for this campaign." required>
+                        <input type="number" class="form-control" id="InputBudget" name="budget" value="{{ campaign.budget }}" placeholder="The budget you have for this campaign." required>
                     </div>
                     <div class="form-group">
                         <label for="InputGoals">Goals</label>
-                        <input type="text" class="form-control" id="InputGoals" name="goals" placeholder="Increase site visitors, followers on socials?" required>
+                        <input type="text" class="form-control" id="InputGoals" name="goals" value="{{ campaign.goals }}" placeholder="Increase site visitors, followers on socials?" required>
                     </div>
                     <br>
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-submit">Submit</button>
                     </div>
                 </form>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-submit" onclick="location.href='/sponsor/delete-campaign/{{ campaign.key }}'">Delete Campaign</button>
+                </div>
             </div>
         </div>
     </div>

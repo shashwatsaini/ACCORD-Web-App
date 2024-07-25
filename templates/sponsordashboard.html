@@ -47,6 +47,7 @@
         </nav>
     </div>
 
+    <!-- Popup for viewing ad requests -->
     <div class="modal fade" id="adRequestModal" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
@@ -60,6 +61,59 @@
             </div>
         </div>
     </div>
+    {% if campaigns[0] %}
+    {% for campaign in campaigns %}
+        {% for adrequest in campaign.ad_requests %}
+        <!-- Popup for modifying ad requests -->
+        <div class="modal fade" id="modifyAdRequestModal{{ adrequest.key }}" tabindex="-1" aria-labelledby="modifyAdRequestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="adRequestModalLabel{{ loop.index0 }}">Send Ad Request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="adRequestModalBody{{ loop.index0 }}">
+                        <form action="/sponsor/ad-requests/modify/{{ adrequest.key }}" method="POST">
+                            <input type="hidden" name="campaign" value="{{ campaign.key }}">
+
+                            <div class="mb-3">
+                                <label for="campaign" class="form-label"><strong>Campaign</strong></label>
+                                <input type="text" class="form-control" id="campaign-name" name="campaign-name" value="{{ campaign.name }}" readonly>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label"><strong>Description</strong></label>
+                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter your ad request description">{{  adrequest.description }}</textarea>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="niche" class="form-label"><strong>Niche</strong></label>
+                                <select class="form-select" id="niche" name="niche" aria-label="Select niche">
+                                    <option value="{{ adrequest.niche }}">Currently: {{ adrequest.niche }}</option>
+                                    <option value="Blogging">Blogging</option>
+                                    <option value="Vlogging">Vlogging</option>
+                                    <option value="Tutorials">Tutorials</option>
+                                    <option value="Reels">Reels</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Photography">Photography</option>
+                                    <option value="Journalism">Journalism</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="payment" class="form-label"><strong>Payment Offer ($)</strong></label>
+                                <input type="number" class="form-control" id="payment" name="payment" min="1" value="{{ adrequest.payment }}" placeholder="Enter your payment offer">
+                            </div>
+        
+                            <button type="submit" class="btn btn-custom">Modify Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+    {% endif %}
 
     {% if campaigns[0] %}
     <br><br>
@@ -88,9 +142,13 @@
                                         {{ campaign.description }}
                                         <br><br>
                                         <p class="card-text">Goals: {{ campaign.goals }}</p>
+                                        <p class="card-text">Niche: {{ campaign.niche }}</p>
                                         <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
                                         data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                             View Ad Requests
+                                        </button>
+                                        <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" onclick="location.href='/sponsor/modify-campaign/{{ campaign.key }}'">
+                                            Modify
                                         </button>
                                     </div>
                                 </div>
@@ -328,6 +386,7 @@
                                             {{ campaign.description }}
                                             <br><br>
                                             <p class="card-text">Goals: {{ campaign.goals }}</p>
+                                            <p class="card-text">Niche: {{ campaign.niche }}</p>
                                             <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal"
                                         data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                                 View Ad Requests
@@ -466,6 +525,7 @@
 
                 var requestStatus = '';
                 var buttonHTML = '';
+                var modifyButtonHTML = '';
 
                 if (request.status === '0') {
                     requestStatus = 'Pending';
@@ -476,13 +536,13 @@
                 } else if (request.status === '2') {
                     requestStatus = 'Accepted';
                     buttonHTML = '<button class="btn custom-btn-danger w-100">Accepted</button>';
-                } else if (request.status === '3') {
+                    modifyButtonHTML = `<button class="btn custom-btn-danger w-100" data-bs-toggle="modal" data-bs-target="#modifyAdRequestModal${ request.key }">Modify</button>`;
+                } else if (request.status === '3') {                                                        
                     requestStatus = 'Completed, Pending Payment';
                     buttonHTML = `<a href="/sponsor/payment/${request.key}" class="btn custom-btn-danger w-100">Completed, Pay Now  </a>`;
                 } else {
                     requestStatus = 'Completed';
-                    buttonHTML = '<button class="btn custom-btn w-100">Completed</button>';
-                    
+                    buttonHTML = '<button class="btn custom-btn w-100">Completed</button>'; 
                 }
 
                 var requestCard = `
@@ -498,6 +558,7 @@
                                 <p><strong>Payment:</strong> $${request.payment}</p>
                                 <br>
                                 ${buttonHTML}
+                                ${modifyButtonHTML}
                             </div>
                         </div>
                     </div>`;
@@ -506,6 +567,24 @@
             });
         });
     });
+
+    // Hides the view ad request modal when the modify ad request modal is shown
+    $(document).ready(function () {
+    // Define prefixes for the modals
+    var firstPrefix = 'adRequestModal';
+    var secondPrefix = 'modifyAdRequestModal';
+
+    $(document).on('show.bs.modal', function (e) {
+        var targetModalId = $(e.target).attr('id');
+        if (targetModalId && targetModalId.startsWith(secondPrefix)) {
+            $('[id^="' + firstPrefix + '"]').each(function() {
+                $(this).modal('hide');
+            });
+        }
+    });
+});
+
+
 
     </script>
 </body>

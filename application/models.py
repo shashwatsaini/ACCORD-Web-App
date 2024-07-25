@@ -65,6 +65,7 @@ class Campaign(db.Model):
     sponsor = db.Column(db.String, db.ForeignKey('Sponsor.username'), nullable=False)
     name = db.Column(db.String)
     description = db.Column(db.String)
+    niche = db.Column(db.String)
     progress = db.Column(db.Integer)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
