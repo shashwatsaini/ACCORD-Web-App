@@ -1,0 +1,136 @@
+.header{
+    font-size: 50px;
+    font-family: "Domine", serif;
+    margin-top: 30px;
+}
+
+
+.gradient-1 {
+    background: linear-gradient(135deg, #C7A500, #FFEA00); /* Darker red to lighter red */
+}
+
+.gradient-2 {
+    background: linear-gradient(135deg, #28A745, #66FF8F); /* Darker green to lighter green */
+}
+
+.gradient-3 {
+    background: linear-gradient(135deg, #006BBF, #6CC8FF); /* Darker blue to lighter blue */
+}
+
+.gradient-4 {
+    background: linear-gradient(135deg, #7A1E99, #B76EDD); /* Darker purple to lighter purple */
+}
+
+.swiper-container, .swiper-container-campaigns {
+    position: relative;
+    overflow: hidden;
+    
+}
+.swiper-slide, .swiper-slide-campaigns {
+    display: flex;
+    justify-content: center;
+}
+.swiper-button-next, .swiper-button-prev, .swiper-button-next-campaigns, .swiper-button-prev-campaigns {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.swiper-button-next::after, .swiper-button-prev::after, .swiper-button-next-campaigns::after, .swiper-button-prev-campaigns::after {
+    color: #FF5733; 
+}
+.swiper-button-next, .swiper-button-next-campaigns {
+    right: 10;
+}
+
+.swiper-button-prev, .swiper-button-prev-campaigns {
+    left: 10;
+}
+
+
+.card{
+    box-shadow: 0 1px 1px 0 black;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.card-header {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+    padding: 1rem;
+    padding-top: 1.5rem;
+    text-align: center;
+}
+.card-body {
+    padding: 1.5rem;
+}
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.card-footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem;
+}
+
+.btn-custom {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+    border: none;
+    transition: background 0.3s ease;
+}
+.btn-custom:hover {
+    background: linear-gradient(0deg, #FF5733, #FF8C6B);
+    color: white;
+}
+.btn {
+    margin: 0.2rem;
+}
+
+.card-container{
+    margin-top: 50px;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+}
+
+.curved-modal-header {
+    border-top-left-radius: 20px; /* Curved top-left corner */
+    border-top-right-radius: 20px; /* Curved top-right corner */
+    background-color: red; /* Ensure header background color blends */
+}
+
+.curved-modal {
+    border-radius: 20px; /* Curved all corners */
+    overflow: hidden; /* Ensure content stays within rounded borders */
+    margin-top: 20%;
+}
+
+.modal-content {
+    background-color: white; /* Ensure modal background is white */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow to enhance the curved effect */
+}
+
+.modal-header .btn-close {
+    margin-right: -10px; /* Adjust button position if necessary */
+}
+
+.progress {
+    height: 20px;
+    border-radius: 10px;
+}
+.progress-bar {
+    background-color: #FF5733;
+}   

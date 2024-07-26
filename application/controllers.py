@@ -49,9 +49,189 @@ def admin_login():
         if Admin.query.filter_by(username=username, password=password).first():
             user = Admin.query.filter_by(username=username).first()
             login_user(load_user(username))
-            return redirect(url_for('admin-dashboard.html'))
+            return redirect(url_for('admin_dashboard'))
         else:
             return render_template('adminlogin.html', incorrect=True)
+
+@app.route('/admin-dashboard', methods=['GET', 'POST'])
+#@login_required
+def admin_dashboard():
+    if request.method == 'GET':
+        return render_template('admindashboard.html')
+
+@app.route('/admin-dashboard/sponsors', methods=['GET', 'POST'])
+#@login_required
+def admin_sponsors():
+    if request.method == 'GET':
+        campaign_subquery = (
+            db.session.query(Campaign.sponsor, db.func.count(Campaign.key).label('campaign_count'))
+            .filter(Campaign.progress == 100)
+            .group_by(Campaign.sponsor)
+            .subquery()
+        )
+        adrequest_subquery = (
+            db.session.query(AdRequests.sponsor, db.func.count(AdRequests.key).label('adrequest_count'))
+            .filter(AdRequests.status == 4)
+            .group_by(AdRequests.sponsor)
+            .subquery()
+        )
+        sponsors = (
+            db.session.query(Sponsor)
+            .outerjoin(campaign_subquery, Sponsor.username == campaign_subquery.c.sponsor)
+            .outerjoin(adrequest_subquery, Sponsor.username == adrequest_subquery.c.sponsor)
+            .add_columns(campaign_subquery.c.campaign_count, adrequest_subquery.c.adrequest_count)
+            .all()
+        )
+
+        campaigns = (
+            db.session.query(Campaign, Sponsor)
+            .filter(Campaign.sponsor == Sponsor.username, Campaign.progress != 100)
+            .all()
+        )
+        return render_template('admindashboard-sponsors.html', sponsors=sponsors, campaigns=campaigns)
+
+@app.route('/admin-dashboard/influencers', methods=['GET', 'POST'])
+#@login_required
+def admin_influencers():
+    if request.method == 'GET':
+        adrequest_subquery = (
+            db.session.query(AdRequests.influencer, db.func.count(AdRequests.key).label('adrequest_count'))
+            .filter(AdRequests.status == 4)
+            .group_by(AdRequests.influencer)
+            .subquery()
+        )
+        influencers = (
+            db.session.query(Influencer)
+            .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+            .add_columns(adrequest_subquery.c.adrequest_count)
+            .all()
+        )
+
+        adrequests = db.session.query(AdRequests, Sponsor.company.label('sponsor'), Influencer.name.label('influencer'), Campaign.name.label('campaign')
+        ).join(
+            Sponsor, AdRequests.sponsor == Sponsor.username
+        ).join(
+            Influencer, AdRequests.influencer == Influencer.username
+        ).join(Campaign, AdRequests.campaign == Campaign.key
+        ).filter(AdRequests.status != 4
+        ).all()
+
+        return render_template('admindashboard-influencers.html', influencers=influencers, adrequests=adrequests)
+
+@app.route('/admin-dashboard/flag/<string:type>/<string:key>', methods=['GET'])
+#@login_required
+def admin_flag(type, key):
+    # Type can be influencer, sponsor, campaign or an ad request
+    # Key is the respective username or key
+
+    if type == 'sponsor':
+        sponsor = Sponsor.query.get(key)
+        campaigns = Campaign.query.filter(Campaign.sponsor == sponsor.username).all()
+        adrequests = AdRequests.query.filter(AdRequests.sponsor == sponsor.username).all()
+        if sponsor.flag == 1:
+            sponsor.flag = 0
+            if campaigns:
+                for campaign in campaigns:
+                    campaign.flag = 0
+            if adrequests:
+                for adrequest in adrequests:
+                    adrequest.flag = 0
+        else:
+            sponsor.flag = 1
+            for campaign in campaigns:
+                campaign.flag = 1
+            for adrequest in adrequests:
+                adrequest.flag = 1
+        db.session.commit()
+        return redirect(url_for('admin_sponsors'))
+    
+    elif type == 'campaign':
+        campaign = Campaign.query.get(key)
+        adrequests = AdRequests.query.filter(AdRequests.campaign == campaign.key).all()
+        if campaign.flag == 1:
+            campaign.flag = 0
+            if adrequests:
+                for adrequest in adrequests:
+                    adrequest.flag = 0
+        else:
+            campaign.flag = 1
+            if adrequests:
+                for adrequest in adrequests:
+                    adrequest.flag = 1
+        db.session.commit()
+        return redirect(url_for('admin_sponsors'))
+
+    elif type == 'influencer':
+        influencer = Influencer.query.get(key)
+        adrequests = AdRequests.query.filter(AdRequests.influencer == influencer.username).all()
+        if influencer.flag == 1:
+            influencer.flag = 0
+            if adrequests:
+                for adrequest in adrequests:
+                    adrequest.flag = 0
+        else:
+            influencer.flag = 1
+            if adrequests:
+                for adrequest in adrequests:
+                    adrequest.flag = 1
+        db.session.commit()
+        return redirect(url_for('admin_influencers'))
+    
+    elif type == 'adrequest':
+        adrequest = AdRequests.query.get(key)
+        if adrequest.flag == 1:
+            adrequest.flag = 0
+        else:
+            adrequest.flag = 1
+        db.session.commit()
+        return redirect(url_for('admin_influencers'))
+
+@app.route('/admin-dashboard/delete/<string:type>/<string:key>', methods=['GET'])
+#@login_required
+def admin_delete(type, key):
+    # Type can be influencer, sponsor, campaign or an ad request
+    # Key is the respective username or key
+
+    if type == 'sponsor':
+        sponsor = Sponsor.query.get(key)
+        campaigns = Campaign.query.filter(Campaign.sponsor == sponsor.username).all()
+        ad_requests = AdRequests.query.filter(AdRequests.sponsor == sponsor.username).all()
+        if campaigns:
+            for campaign in campaigns:
+                db.session.delete(campaign)
+        if ad_requests:
+            for ad_request in ad_requests:
+                db.session.delete(ad_request)
+        db.session.delete(sponsor)
+        db.session.commit()
+        return redirect(url_for('admin_sponsors'))
+    
+    elif type == 'campaign':
+        campaign = Campaign.query.get(key)
+        ad_requests = AdRequests.query.filter(AdRequests.campaign == campaign.key).all()
+        if ad_requests:
+            for ad_request in ad_requests:
+                db.session.delete(ad_request)
+        db.session.delete(campaign)
+        db.session.commit()
+        return redirect(url_for('admin_sponsors'))
+    
+    elif type == 'influencer':
+        influencer = Influencer.query.get(key)
+        ad_requests = AdRequests.query.filter(AdRequests.influencer == influencer.username).all()
+        if ad_requests:
+            for ad_request in ad_requests:
+                db.session.delete(ad_request)
+        db.session.delete(influencer)
+        db.session.commit()
+        return redirect(url_for('admin_influencers'))
+    
+    elif type == 'adrequest':
+        ad_request = AdRequests.query.get(key)
+        db.session.delete(ad_request)
+        db.session.commit()
+        return redirect(url_for('admin_influencers'))
+
 
 @app.route('/influencer/register', methods=['GET', 'POST'])
 def influencer_registration():
