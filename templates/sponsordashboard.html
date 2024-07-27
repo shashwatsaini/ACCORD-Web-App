@@ -147,9 +147,15 @@
                                         data-ad-requests='{{ campaign.ad_requests |tojson }}'>
                                             View Ad Requests
                                         </button>
+                                        {% if campaign.flag == 0 %}
                                         <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button" onclick="location.href='/sponsor/modify-campaign/{{ campaign.key }}'">
                                             Modify
                                         </button>
+                                        {% else %}
+                                        <button class="btn btn-custom w-100 mt-2 view-ad-request-btn" type="button">
+                                            Flagged by Admin
+                                        </button>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="card-footer text-body-secondary d-flex justify-content-between">
@@ -359,7 +365,6 @@
       </div>
 
         {% if past_campaigns[0] %}
-        <br><br>
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -415,7 +420,9 @@
             <br><br>
             <div class="row">
                 <div class="col-12 text-center">
+                    <br>
                     <h1 style="color: black;">No Past Campaigns</h1>
+                    <br>
                 </div>
             </div>
             {% endif %}
@@ -527,7 +534,10 @@
                 var buttonHTML = '';
                 var modifyButtonHTML = '';
 
-                if (request.status === '0') {
+                if (request.flag === '1'){
+                    requestStatus = 'Flagged';
+                    buttonHTML = '<button class="btn custom-btn-danger w-100">Flagged by Admin</button>';
+                } else if (request.status === '0') {
                     requestStatus = 'Pending';
                     buttonHTML = '<button class="btn custom-btn-danger w-100">Pending</button>';
                 } else if (request.status === '1') {

@@ -58,10 +58,15 @@
                                 <div class="d-flex justify-content-center">
                                     <button type="submit" class="btn">Submit</button>
                                 </div>
-                                {% if incorrect %}
+                                {% if incorrect == 1 %}
                                     <br>
                                     <div class="alert alert-danger" style="padding: 5px;">
                                         <p style="margin-bottom: 0; text-align: center;">Incorrect Password.</p>
+                                    </div>
+                                {% elif flag == 1 %}
+                                    <br>
+                                    <div class="alert alert-danger" style="padding: 5px;">
+                                        <p style="margin-bottom: 0; text-align: center;">Your account has been flagged.</p>
                                     </div>
                                 {% endif %}
                             </form>

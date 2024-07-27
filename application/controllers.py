@@ -22,21 +22,27 @@ request_state = {0: 'Pending', 1: 'Rejected', 2: 'Accepted'}
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('userlogin.html', incorrect=False)
+        return render_template('userlogin.html', incorrect=0, flag=0)
     else:
         username = request.form.get('username')
         password = request.form.get('password')
 
         if Influencer.query.filter_by(username=username, password=password).first():
             user = Influencer.query.filter_by(username=username).first()
-            login_user(load_user(username))
-            return redirect(url_for('influencer_dashboard'))
+            if user.flag == 0:
+                login_user(load_user(username))
+                return redirect(url_for('influencer_dashboard'))
+            else:
+                return render_template('userlogin.html', incorrect=0, flag=1)
         elif Sponsor.query.filter_by(username=username, password=password).first():
             user = Sponsor.query.filter_by(username=username).first()
-            login_user(load_user(username))
-            return redirect(url_for('sponsor_dashboard'))
+            if user.flag == 0:
+                login_user(load_user(username))
+                return redirect(url_for('sponsor_dashboard'))   
+            else:
+                return render_template('userlogin.html', incorrect=0, flag=1)
         else:
-            return render_template('userlogin.html', incorrect=True)
+            return render_template('userlogin.html', incorrect=1, flag=0)
 
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
@@ -328,7 +334,7 @@ def campaign_find():
             adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
             campaigns = (
                 db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
-                .filter(Campaign.niche == niche, Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
+                .filter(Campaign.niche == niche, Campaign.progress != 100, Campaign.sponsor == Sponsor.username, Campaign.flag == 0)
                 .all()
             )
             return render_template('campaignsearch.html', campaigns=campaigns)
@@ -337,7 +343,7 @@ def campaign_find():
             adrequest_count = db.session.query(db.func.count(AdRequests.key)).filter(AdRequests.status == 4).label('adrequest_count')
             campaigns = (
                 db.session.query(Campaign, Sponsor, campaign_count, adrequest_count)
-                .filter(Campaign.progress != 100, Campaign.sponsor == Sponsor.username)
+                .filter(Campaign.progress != 100, Campaign.sponsor == Sponsor.username, Campaign.flag == 0)
                 .all()
             )
             return render_template('campaignsearch.html', campaigns=campaigns)
@@ -488,6 +494,7 @@ def sponsor_dashboard():
                 'goals': campaign.goals,
                 'start_date': campaign.start_date,
                 'end_date': campaign.end_date,
+                'flag': campaign.flag,
                 'ad_requests': [request.to_dict() for request in campaign_requests]
             })
         
@@ -530,7 +537,7 @@ def sponsor_find():
                     Influencer,
                     adrequest_subquery.c.adrequests_count
                 )
-                .filter(Influencer.category == category, Influencer.niche == niche)
+                .filter(Influencer.category == category, Influencer.niche == niche, Influencer.flag == 0)
                 .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
                 .all()
             )
@@ -550,7 +557,7 @@ def sponsor_find():
                     Influencer,
                     adrequest_subquery.c.adrequests_count
                 )
-                .filter(Influencer.category == category)
+                .filter(Influencer.category == category, Influencer.flag == 0)
                 .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
                 .all()
             )
@@ -570,7 +577,7 @@ def sponsor_find():
                     Influencer,
                     adrequest_subquery.c.adrequests_count
                 )
-                .filter(Influencer.niche == niche)
+                .filter(Influencer.niche == niche, Influencer.flag == 0)
                 .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
                 .all()
             )
@@ -590,6 +597,7 @@ def sponsor_find():
                     adrequest_subquery.c.adrequests_count
                 )
                 .outerjoin(adrequest_subquery, Influencer.username == adrequest_subquery.c.influencer)
+                .filter(Influencer.flag == 0)
                 .all()
             )
         campaigns = Campaign.query.filter(Campaign.sponsor == 'sponsor').all()

@@ -56,7 +56,8 @@ class AdRequests(db.Model):
             'description': str(self.description),
             'niche': str(self.niche),
             'payment': str(self.payment),
-            'status': str(self.status)
+            'status': str(self.status),
+            'flag': str(self.flag)
         }
 
 class Campaign(db.Model):

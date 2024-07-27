@@ -70,9 +70,15 @@
                                         {{ ad.description }}
                                         <br><br>
                                         <p class="card-text">Niche: {{ ad.niche }}</p>
+                                        {% if ad.flag == 0 %}
                                         <button class="btn custom-btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInvite1" aria-expanded="false" aria-controls="collapseInvite1">
                                             View
                                         </button>
+                                        {% else %}
+                                        <button class="btn custom-btn-danger" type="button">
+                                            Flagged by Admin
+                                        </button>
+                                        {% endif %}
                                         <div class="collapse" id="collapseInvite1">
                                             <br>
                                             <div class="card card-body mt-2">
