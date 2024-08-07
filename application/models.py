@@ -7,6 +7,7 @@ class Admin(db.Model, UserMixin):
     password = db.Column(db.String, nullable=False) 
     name = db.Column(db.String)
 
+    # Needed for flask-login
     def get_id(self):
         return str(self.username)
 
@@ -21,6 +22,7 @@ class Influencer(db.Model, UserMixin):
     niche = db.Column(db.String)
     flag = db.Column(db.Integer)
 
+    # Needed for flask-login
     def get_id(self):
         return str(self.username)
 
@@ -33,9 +35,11 @@ class Sponsor(db.Model, UserMixin):
     industry = db.Column(db.String)
     flag = db.Column(db.Integer)
 
+    # Needed for flask-login
     def get_id(self):
         return str(self.username)
 
+# Ad requests are created from either influencer requests or sponsor requests, when they have been accepted by the other party
 class AdRequests(db.Model):
     __tablename__ = 'AdRequests'
     key = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -48,6 +52,7 @@ class AdRequests(db.Model):
     status = db.Column(db.Integer)
     flag = db.Column(db.Integer)
 
+    # Convert the object to a dictionary, for easy serialization into json
     def to_dict(self):
         return {
             'key': str(self.key),

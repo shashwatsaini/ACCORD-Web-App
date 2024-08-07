@@ -14,7 +14,7 @@ app = None
 def create_app():
     app = Flask(__name__, template_folder='templates')
     app.config.from_object(LocalDevelopmentConfig)
-    app.config['SECRET_KEY'] = os.urandom(24)
+    app.config['SECRET_KEY'] = os.urandom(24) # Used for session management
 
     db.init_app(app)
     login_manager = LoginManager()
@@ -26,6 +26,9 @@ def create_app():
 app, login_manager = create_app()
 
 from application.controllers import *
+from application.admin_controllers import *
+from application.influencer_controllers import *
+from application.sponsor_controllers import *
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

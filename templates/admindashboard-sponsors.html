@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('static', filename='title-logo.png') }}" type="image">
-    <title>Dashboard</title>
+    <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -27,7 +27,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;">Stats</button>
+                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('admin_dashboard') }}'">Stats</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('admin_sponsors')}}'">Sponsors</button>
@@ -47,6 +47,7 @@
 
     <div class="container">   
 
+        <!-- Shows all sponsors -->
         {% if sponsors[0] %}
         <div class="row text-center">
             <h1 class="header">Sponsors</h1>
@@ -99,6 +100,7 @@
         </div>
         {% endif %}
         
+        <!-- Shows all campaigns -->
         {% if campaigns[0] %}
         <div class="row text-center">
             <h1 class="header">Active Campaigns</h1>
@@ -201,12 +203,12 @@
                 nextEl: '.swiper-button-next-sponsors',
                 prevEl: '.swiper-button-prev-sponsors',
             },
-            loop: false, // Disable looping
-            watchOverflow: true, // Hide navigation buttons if not enough slides
+            loop: false,
+            watchOverflow: true,
         });
 
         var swiperCampaigns = new Swiper('.swiper-container-campaigns', {
-            slidesPerView: 2,
+            slidesPerView: 3,
             spaceBetween: 10,
             breakpoints: {
                 640: {
@@ -218,7 +220,7 @@
                     spaceBetween: 20,
                 },
                 1024: {
-                    slidesPerView: 2,
+                    slidesPerView: 3,
                     spaceBetween: 30,
                 },
             },
@@ -226,8 +228,8 @@
                 nextEl: '.swiper-button-next-campaigns',
                 prevEl: '.swiper-button-prev-campaigns',
             },
-            loop: false, // Disable looping
-            watchOverflow: true, // Hide navigation buttons if not enough slides
+            loop: false,
+            watchOverflow: true,
         });
     </script>
 

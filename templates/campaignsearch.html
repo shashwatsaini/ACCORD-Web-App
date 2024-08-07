@@ -35,9 +35,6 @@
                         <li class="nav-item">
                             <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('campaign_find')}}'">Find Campaigns</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Stats</button>
-                        </li>
                     </ul>
                     <form action="{{ url_for('logout') }}">
                     <button class="btn btn-outline-danger logout-btn" type="submit">Log out</button>
@@ -51,6 +48,7 @@
             <h1 class="header">Find Campaigns</h1>
         </div>
         <div class="row mb-4">
+            <!-- Filtering campaigns -->
             <div id="filterSection" class="container content-space-1">
                 <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
                   <p>Select filters to find the right influencers for your campaigns.</p>
@@ -61,13 +59,13 @@
                             <label class="form-label visually-hidden" for="filterNiche">Select niche</label>
                             <select class="form-select form-select-lg" id="filterNiche" name="niche" aria-label="Select niche">
                                 <option value="">All niches</option>
-                                <option value="Blogging">Blogging</option>
-                                <option value="Vlogging">Vlogging</option>
-                                <option value="Tutorials">Tutorials</option>
-                                <option value="Reels">Reels</option>
-                                <option value="Music">Music</option>
-                                <option value="Photography">Photography</option>
-                                <option value="Journalism">Journalism</option>
+                                <option value="blogging">Blogging</option>
+                                <option value="vlogging">Vlogging</option>
+                                <option value="tutorials">Tutorials</option>
+                                <option value="reels">Reels</option>
+                                <option value="music">Music</option>
+                                <option value="photography">Photography</option>
+                                <option value="journalism">Journalism</option>
                             </select>
                         </div>
                     </div>
@@ -163,6 +161,7 @@
         {% endif %}
 
         <div class="row justify-content-center">
+            <!-- Shows all campaigns -->
             {% if campaigns[0] %}
                 {% for campaign, sponsor, campaign_count, adrequest_count in campaigns %}
                 <div class="col-md-6 card-container mb-4">

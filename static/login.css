@@ -8,7 +8,7 @@ body {
 }
 
 .content-wrapper {
-    background-color: rgba(0, 0, 0, 0.05); /* Slightly duller hue */
+    background-color: rgba(0, 0, 0, 0.05); 
 }
 
 .row > h1{
@@ -17,17 +17,17 @@ body {
 }
 
 .form-container {
-    background-color: rgba(0, 0, 0, 0.1); /* Duller hue with transparency */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 15px; /* Rounded borders */
-    padding: 20px; /* Spacing inside the form */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+    background-color: rgba(0, 0, 0, 0.1); 
+    border: 1px solid #ccc; 
+    border-radius: 15px; 
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 .form-container .form-label {
-    margin-bottom: 10px; /* Spacing between label and input */
+    margin-bottom: 10px; 
 }
 .form-container .mb-3 {
-    margin-bottom: 20px; /* Spacing between form groups */
+    margin-bottom: 20px; 
 }
 
 .registration-section {

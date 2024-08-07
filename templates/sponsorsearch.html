@@ -35,9 +35,6 @@
                         <li class="nav-item">
                             <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('sponsor_find')}}'">Find Influencers</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;">Stats</button>
-                        </li>
                     </ul>
                     <form action="{{ url_for('logout') }}">
                     <button class="btn btn-outline-danger logout-btn" type="submit">Log out</button>
@@ -51,6 +48,7 @@
             <h1 class="header">Find Influencers</h1>
         </div>
         <div class="row mb-4">
+            <!-- Filtering influencers -->
             <div id="filterSection" class="container content-space-1">
                 <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
                   <p>Select filters to find the right influencers for your campaigns.</p>
@@ -62,6 +60,7 @@
                             <select class="form-select form-select-lg" id="filterCategory" name="category" aria-label="Select category">
                                 <option value="">All categories</option>
                                 <option value="gaming">Gaming</option>
+                                <option value="technology">Technology</option>
                                 <option value="clothing">Clothing</option>
                                 <option value="entertainment">Entertainment</option>
                                 <option value="fashion">Fashion</option>
@@ -142,7 +141,7 @@
                                 <select class="form-select" id="campaign" name="campaign" aria-label="Select campaign">
                                     <option value="" disabled selected>Select a campaign</option>
                                     {% for campaign in campaigns %}
-                                    <option value="{{ loop.index0 }}">{{ campaign.name }}</option>
+                                    <option value="{{ campaign.key }}">{{ campaign.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -231,7 +230,7 @@
             const categorySelect = document.getElementById('filterCategory');
             const nicheSelect = document.getElementById('filterNiche');
         
-            // Function to submit the form when a selection changes
+            // Function to submit the form when a selection changes, for the filter
             function submitForm() {
                 filterForm.submit();
             }

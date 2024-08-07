@@ -4,9 +4,8 @@
     margin-top: 30px;
 }
 
-
-.gradient-1 {
-    background: linear-gradient(135deg, #C7A500, #FFEA00); /* Darker red to lighter red */
+.gradient-1{
+    background: linear-gradient(135deg, #FF5733, #FF8C6B); /* Darker orange to lighter orange */
 }
 
 .gradient-2 {
@@ -19,6 +18,10 @@
 
 .gradient-4 {
     background: linear-gradient(135deg, #7A1E99, #B76EDD); /* Darker purple to lighter purple */
+}
+
+.gradient-5 {
+    background: linear-gradient(135deg, #C7A500, #FFEA00); /* Darker red to lighter red */
 }
 
 .swiper-container, .swiper-container-campaigns {
@@ -71,6 +74,9 @@
 .card-body {
     padding: 1.5rem;
 }
+.card-text-center {
+    text-align: center;
+}
 .card-container {
     display: flex;
     justify-content: center;
@@ -81,6 +87,13 @@
     background-color: #f8f9fa;
     text-align: center;
     padding: 1rem;
+}
+
+.stat-card-header {
+    color: white;
+    padding: 1rem;
+    padding-top: 1.5rem;
+    text-align: center;
 }
 
 .btn-custom {
@@ -107,24 +120,24 @@
 }
 
 .curved-modal-header {
-    border-top-left-radius: 20px; /* Curved top-left corner */
-    border-top-right-radius: 20px; /* Curved top-right corner */
-    background-color: red; /* Ensure header background color blends */
+    border-top-left-radius: 20px; 
+    border-top-right-radius: 20px; 
+    background-color: red; 
 }
 
 .curved-modal {
-    border-radius: 20px; /* Curved all corners */
-    overflow: hidden; /* Ensure content stays within rounded borders */
+    border-radius: 20px; 
+    overflow: hidden;
     margin-top: 20%;
 }
 
 .modal-content {
-    background-color: white; /* Ensure modal background is white */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow to enhance the curved effect */
+    background-color: white; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .modal-header .btn-close {
-    margin-right: -10px; /* Adjust button position if necessary */
+    margin-right: -10px;
 }
 
 .progress {
@@ -134,3 +147,13 @@
 .progress-bar {
     background-color: #FF5733;
 }   
+
+.PieChart {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.Graph {
+    width: 100% !important;
+    height: auto !important;
+}

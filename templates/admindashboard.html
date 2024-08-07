@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('static', filename='title-logo.png') }}" type="image">
-    <title>Dashboard</title>
+    <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -15,12 +15,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="nav-container">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid px-5">
-                <img class="navbar-brand img-fluid" src="{{ url_for('static', filename='logo.png') }}" style="width: 10 %;" />
+                <img class="navbar-brand img-fluid" src="{{ url_for('static', filename='logo.png') }}" style="width: 10%;" />
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -30,7 +31,7 @@
                             <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;">Stats</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('admin_sponsors')}}'">Sponsors</button>
+                            <button class="nav-link btn" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('admin_sponsors') }}'">Sponsors</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link btn" aria-current="page" href="#" style="color: black; font-weight: bolder;" onclick="location.href='{{ url_for('admin_influencers') }}'">Influencers</button>
@@ -45,7 +46,459 @@
         </nav>
     </div>
 
+    <div class="container mt-4">
+        <div class="row mb-3 ms-auto" style="width: 50%;">
+            <div class="col-6">
+                <button class="btn btn-custom w-100" onclick="showSection('section1')">Universal Stats</button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-custom w-100" onclick="showSection('section2')">Detailed Analysis</button>
+            </div>
+        </div>    
+    
+        <div id="section1" style="display: block;">
+            <!-- Shows all universal stats, example: Total sponsors and total influencers -->
+            <h2>Universal Stats</h2>
+            <br>
+            <div class="row">
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Sponsors</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['sponsors'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Influencers</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['influencers'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Campaigns</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['campaigns'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Ad Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['ad_requests'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Sponsor Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['sponsor_requests'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Influencer Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['influencer_requests'] }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Budget for Campaigns</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>${{ unistats['budget'] }}.00</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Total Payments for Ad Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>${{ unistats['payment'] }}.00</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+            <h2>Top Performers</h2>
+            <br>
+            <div class="row">
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Sponsor</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['top_sponsor'].company }}</strong></p>
+                                <p class="card-text card-text-center"><strong>Campaigns: {{ unistats['top_sponsor'].campaign_count }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Influencer</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['top_influencer'].name }}</strong></p>
+                                <p class="card-text card-text-center"><strong>Ad Requests: {{ unistats['top_influencer'].adrequest_count }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Campaign</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p class="card-text card-text-center"><strong>{{ unistats['top_campaign'].name }}</strong></p>
+                                <p class="card-text card-text-center"><strong>Budget: ${{ unistats['top_campaign'].budget }}</strong></p>
+                                <p class="card-text card-text-center"><strong>Ad Requests: {{ unistats['top_campaign'].adrequest_count }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
+        <div id="section2" style="display: none;">
+            <!-- Shows a more detailed analysis of the platform through pie charts and graphs -->
+            <h2>Detailed Analysis</h2>
+            <br>
+            
+            <div class="row">
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Niches for Influencers</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="PieChart" id="nicheInfluencerPieChart"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const nicheInfluencerlabels = {{ detstats['niches_influencers'][0] | safe }};
+                                const nicheInfluencerSizes = {{ detstats['niches_influencers'][1] | safe }};
+
+                                // Chart.js setup
+                                const nicheInfluencerCtx = document.getElementById('nicheInfluencerPieChart').getContext('2d');
+                                const NicheInfluencerPieChart = new Chart(nicheInfluencerCtx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: nicheInfluencerlabels,
+                                        datasets: [{
+                                            data: nicheInfluencerSizes,
+                                            backgroundColor: [
+                                                '#ff5733',
+                                                '#ffc300',
+                                                '#c1ff72',
+                                                '#33ff57',
+                                                '#339fff',
+                                                '#9d33ff',
+                                            ]
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Niches for Campaigns</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="PieChart" id="nicheCampaignPieChart"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const nicheCampaignlabels = {{ detstats['niches_campaigns'][0] | safe }};
+                                const nicheCamapignSizes = {{ detstats['niches_campaigns'][1] | safe }};
+
+                                // Chart.js setup
+                                const nicheCampaignCtx = document.getElementById('nicheCampaignPieChart').getContext('2d');
+                                const NicheCampaignPieChart = new Chart(nicheCampaignCtx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: nicheCampaignlabels,
+                                        datasets: [{
+                                            data: nicheCamapignSizes,
+                                            backgroundColor: [
+                                                '#ff5733',
+                                                '#ffc300',
+                                                '#c1ff72',
+                                                '#33ff57',
+                                                '#339fff',
+                                                '#9d33ff',
+                                            ]
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Niches for Ad Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="PieChart" id="NichePieChart"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const nichelabels = {{ detstats['niches'][0] | safe }};
+                                const nichesizes = {{ detstats['niches'][1] | safe }};
+
+                                // Chart.js setup
+                                const nichectx = document.getElementById('NichePieChart').getContext('2d');
+                                const NichePieChart = new Chart(nichectx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: nichelabels,
+                                        datasets: [{
+                                            data: nichesizes,
+                                            backgroundColor: [
+                                                '#ff5733',
+                                                '#ffc300',
+                                                '#c1ff72',
+                                                '#33ff57',
+                                                '#339fff',
+                                                '#9d33ff',
+                                            ]
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Top Categories for Influencers</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="PieChart" id="categoryInfluencerPieChart"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const categoryInfluencerlabels = {{ detstats['categories_influencers'][0] | safe }};
+                                const categoryInfluencerSizes = {{ detstats['categories_influencers'][1] | safe }};
+
+                                // Chart.js setup
+                                const categoryInfluencerCtx = document.getElementById('categoryInfluencerPieChart').getContext('2d');
+                                const CategoryInfluencerPieChart = new Chart(categoryInfluencerCtx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: categoryInfluencerlabels,
+                                        datasets: [{
+                                            data: categoryInfluencerSizes,
+                                            backgroundColor: [
+                                                '#ff5733',
+                                                '#ffc300',
+                                                '#c1ff72',
+                                                '#33ff57',
+                                                '#339fff',
+                                                '#9d33ff',
+                                            ]
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-8">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Cumulative Budget for Campaigns</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="Graph" id="cumulativeBudgetGraph"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const cumulativeBudgets = {{ detstats['cumulative_budgets'] | safe }};
+                                
+                                // Chart.js setup
+                                const cumulativeBudgetsctx = document.getElementById('cumulativeBudgetGraph').getContext('2d');
+                                const cumulativeBudgetGraph = new Chart(cumulativeBudgetsctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: cumulativeBudgets.map((_, index) => `${index + 1}`),
+                                        datasets: [{
+                                            label: 'Cumulative Budget',
+                                            data: cumulativeBudgets,
+                                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                            borderColor: 'rgba(54, 162, 235, 1)',
+                                            borderWidth: 1,
+                                            fill: true
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-8">
+                    <div class="card mb-4">
+                        <div class="stat-card-header">
+                            <h5 class="card-title"><strong>Cumulative Payment for Ad Requests</strong></h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas class="Graph" id="cumulativePaymentGraph"></canvas>
+                            <script>
+                                // Get data from Flask
+                                const cumulativePayments = {{ detstats['cumulative_payments'] | safe }};
+                                
+                                // Chart.js setup
+                                const cumulativePaymentsctx = document.getElementById('cumulativePaymentGraph').getContext('2d');
+                                const cumulativePaymentsGraph = new Chart(cumulativePaymentsctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: cumulativePayments.map((_, index) => ``),
+                                        datasets: [{
+                                            label: 'Cumulative Payment',
+                                            data: cumulativePayments,
+                                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                            borderColor: 'rgba(54, 162, 235, 1)',
+                                            borderWidth: 1,
+                                            fill: true
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+    <footer class="footer text-white text-center">
+        <div class="container">
+            <br>
+            <p>&copy; 2024 Accord. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            document.getElementById('section1').style.display = 'none';
+            document.getElementById('section2').style.display = 'none';
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const gradients = [
+                'gradient-1',
+                'gradient-2',
+                'gradient-3',
+                'gradient-4',
+                'gradient-5'
+            ];
+            
+            const cards = document.querySelectorAll('.card'); 
+
+            cards.forEach((card, index) => {
+                const header = card.querySelector('.stat-card-header');
+                if (header) {
+                    header.classList.add(gradients[index % gradients.length]); 
+                }
+            });
+        });
+    </script>
 </body>
 </html>
