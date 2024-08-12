@@ -277,7 +277,7 @@ def create_campaign():
 def modify_campaign(key):
     if request.method == 'GET':
         campaign = Campaign.query.get(key)
-        return render_template('modifycampaign.html', company_name='microsoft', campaign=campaign)
+        return render_template('modifycampaign.html', company_name=current_user.company, campaign=campaign)
     else:
         name = request.form.get('campaign_name')
         description = request.form.get('description')
