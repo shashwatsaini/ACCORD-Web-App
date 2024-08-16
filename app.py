@@ -7,8 +7,6 @@ from application import config
 from application.config import LocalDevelopmentConfig
 from application.database import db
 
-current_dir = os.path.abspath(os.path.dirname(__file__))
-
 app = None
 
 def create_app():
@@ -29,6 +27,7 @@ from application.controllers import *
 from application.admin_controllers import *
 from application.influencer_controllers import *
 from application.sponsor_controllers import *
+from application.ai_controllers import *
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

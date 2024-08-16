@@ -1,0 +1,274 @@
+ACCORD Guide for Agent
+
+Description: ACCORD is platform for influencers and sponsors to collaborate on campaigns through ad requests. 
+
+---
+
+Frameworks Used:
+1.	Flask: The corner-stone of the project, Flask is used to maintain the web-app.
+2.	Flask SQLAlchemy & SQLite: The database for the web-app, holds all users, campaigns, and requests.
+3.	Bootstrap & CSS: All styling is done through bootstrap and additional CSS.
+4.	JavaScript: Used in front-end validation, generating dynamic elements through Json from backend, as well as applying dynamic styles.
+5.	Flask Login: Provides a secure login system, with the current user being tracked across all actions.
+6.	ChartJS: Used to generate graphs for the admin portal.
+7.	SwiperJS: Used to create sliders for different elements, such as campaigns and ad requests.
+8.	Canva: All logos and other graphics were created using Canva. 
+
+Core Functionalities:
+1.	Login system: Includes a single page for login for both influencers and sponsors, and a separate page for admin login. All users of the three types have unique usernames, hence a shared page is feasible.
+2.	Admin Portal: Features two sets of exhaustive statistics: Universal statistics that show the number of users, campaigns, etc. along with the top performers in each; and Detailed statistics that feature pie charts for the distribution of categories & niches across influencers, campaigns, & ad requests, as well as cumulative graphs for campaign budgets and ad request payments.
+3.	Campaign Management: Sponsors can create a new campaign with all relevant details, including being able to categorize them into niches. Campaigns can also be modified and deleted. Once created, accepted ad requests for each campaign can be viewed and modified.
+4.	Ad Request Management: Sponsors and influencers can both send requests to each other: Sponsors can send requests inviting influencers to an ad request for a campaign, and influencers can send requests to join a campaign by sending an ad request. Sponsors can also modify ad requests after they have been accepted.
+5.	Search for influencers, campaigns: Sponsors can search for influencers based on their category & niche, and influencers can search for campaigns based on niche. Both can send ad requests to one another.
+6.	Taking action on ad requests: Both sides upon receiving a request from the other, can either accept, reject, or negotiate. Negotiating sends the request back to the other party, where they too can accept, reject, or negotiate further. Influencers can also mark ad requests as completed, prompting payment from sponsors.
+
+Additional Features:
+1.	A robust and a secure login system through Flask login. Prevents unauthorized access to pages and other endpoints.
+2.	Detailed styling and aesthetics such as- custom logos for ACCORD, sponsors, & influencers; Bootstrap for providing unique & consistent themes & designs; and JavaScript implements a variety of designs for cards & buttons, depending on their count and state.
+3.	A dummy payment portal for sponsors to pay influencers when an ad request has been completed. ‘Completed, awaiting payment’ is a separate state for ad requests, and is integrated into campaign & ad request management.
+4.	Charts and graphs in the admin portal are created through ChartJS.
+5.	Frontend validation in forms through JavaScript.
+
+---
+
+Database Models Documentation:
+
+This document provides an overview and explanation of the database models used in the Flask application. The models define the structure of the database tables and the relationships between them. These models are used to store and manage data for the application.
+
+1. Admin
+   - Table Name: `Admin`
+   - Description: Represents the administrative users of the application.
+   - Attributes:
+     - `username` (String, Primary Key): Unique identifier for the admin.
+     - `password` (String, Not Null): The password for the admin account.
+     - `name` (String): The name of the admin.
+   - Methods:
+     - `get_id()`: Returns the `username` as a string for Flask-Login integration.
+
+2. Influencer
+   - Table Name: `Influencer`
+   - Description: Represents influencers registered in the application.
+   - Attributes:
+     - `username` (String, Primary Key): Unique identifier for the influencer.
+     - `password` (String, Not Null): The password for the influencer account.
+     - `name` (String): The name of the influencer.
+     - `bio` (String): A short biography of the influencer.
+     - `platforms` (String): Platforms where the influencer is active.
+     - `category` (String): General category of content the influencer creates.
+     - `niche` (String): Specific niche within the category.
+     - `flag` (Integer): A flag indicating the status of the influencer.
+   - Methods:
+     - `get_id()`: Returns the `username` as a string for Flask-Login integration.
+
+3. Sponsor
+   - Table Name: `Sponsor`
+   - Description: Represents sponsors registered in the application.
+   - Attributes:
+     - `username` (String, Primary Key): Unique identifier for the sponsor.
+     - `password` (String, Not Null): The password for the sponsor account.
+     - `company` (String): The company name associated with the sponsor.
+     - `bio` (String): A short biography of the sponsor.
+     - `industry` (String): The industry in which the sponsor operates.
+     - `flag` (Integer): A flag indicating the status of the sponsor.
+   - Methods:
+     - `get_id()`: Returns the `username` as a string for Flask-Login integration.
+
+4. AdRequests
+   - Table Name: `AdRequests`
+   - Description: Represents ad requests that are created when an influencer or sponsor request is accepted by the other party.
+   - Attributes:
+     - `key` (Integer, Primary Key, Auto-increment): Unique identifier for the ad request.
+     - `campaign` (Integer, Foreign Key): The campaign associated with the ad request.
+     - `sponsor` (String, Foreign Key): The sponsor who initiated the request.
+     - `influencer` (String, Foreign Key): The influencer involved in the ad request.
+     - `description` (String): Description of the ad request.
+     - `niche` (String): Specific niche related to the ad request.
+     - `payment` (Integer): Payment amount for the ad request.
+     - `status` (Integer): Status of the ad request.
+     - `flag` (Integer): A flag indicating the status or importance of the ad request.
+   - Methods:
+     - `to_dict()`: Converts the object to a dictionary for easy serialization into JSON.
+
+5. Campaign
+   - Table Name: `Campaign`
+   - Description: Represents campaigns created by sponsors.
+   - Attributes:
+     - `key` (Integer, Primary Key, Auto-increment): Unique identifier for the campaign.
+     - `sponsor` (String, Foreign Key): The sponsor who created the campaign.
+     - `name` (String): The name of the campaign.
+     - `description` (String): Description of the campaign.
+     - `niche` (String): Specific niche targeted by the campaign.
+     - `progress` (Integer): Progress status of the campaign.
+     - `start_date` (Date): Start date of the campaign.
+     - `end_date` (Date): End date of the campaign.
+     - `budget` (Integer): Budget allocated for the campaign.
+     - `goals` (String): Goals intended to be achieved through the campaign.
+     - `flag` (Integer): A flag indicating the status or importance of the campaign.
+
+6. InfluencerRequests
+   - Table Name: `InfluencerRequests`
+   - Description: Represents requests from influencers to participate in a campaign before it is converted to an ad request.
+   - Attributes:
+     - `key` (Integer, Primary Key, Auto-increment): Unique identifier for the request.
+     - `influencer` (String, Foreign Key): The influencer making the request.
+     - `sponsor` (String, Foreign Key): The sponsor involved in the request.
+     - `campaign` (Integer, Foreign Key): The campaign associated with the request.
+     - `description` (String): Description of the request.
+     - `niche` (String): Specific niche related to the request.
+     - `payment` (Integer): Payment amount proposed by the influencer.
+     - `status` (Integer): Status of the request.
+
+7. SponsorRequests
+   - Table Name: `SponsorRequests`
+   - Description: Represents requests from sponsors to influencers to participate in a campaign before it is converted to an ad request.
+   - Attributes:
+     - `key` (Integer, Primary Key, Auto-increment): Unique identifier for the request.
+     - `influencer` (String, Foreign Key): The influencer receiving the request.
+     - `sponsor` (String, Foreign Key): The sponsor making the request.
+     - `campaign` (Integer, Foreign Key): The campaign associated with the request.
+     - `description` (String): Description of the request.
+     - `niche` (String): Specific niche related to the request.
+     - `payment` (Integer): Payment amount proposed by the sponsor.
+     - `status` (Integer): Status of the request.
+
+---
+
+Controllers Overview
+
+1. User Loader Function
+   - Endpoint: `@login_manager.user_loader`
+   - Overview: Loads a user from the database based on `username`. Supports Admin, Influencer, and Sponsor user types for session management.
+
+2. Login Route
+   - Endpoint: `/`
+   - Methods: `GET`, `POST`
+   - Overview: Handles user login by verifying credentials across Admin, Influencer, and Sponsor tables. Redirects to respective dashboards if successful.
+
+3. Logout Route
+   - Endpoint: `/logout`
+   - Methods: `GET`
+   - Overview: Logs out the current user and redirects to the login page.
+
+---
+
+Influencer Controllers Overview
+
+1. Influencer Registration
+   - Endpoint: `/influencer/register`
+   - Methods: `GET`, `POST`
+   - Overview: Handles the registration of influencers. Checks if the username is unique across all user types and creates a new influencer profile.
+
+2. Influencer Dashboard
+   - Endpoint: `/influencer/dashboard`
+   - Methods: `GET`, `POST`
+   - Overview: Displays ongoing ad campaigns, sponsor requests, completed requests, and past sponsor requests specific to the influencer.
+
+3. Influencer Profile
+   - Endpoint: `/influencer/profile`
+   - Methods: `GET`
+   - Overview: Shows the profile of the logged-in influencer, including completed ad requests.
+
+4. Find Campaigns
+   - Endpoint: `/influencer/find`
+   - Methods: `GET`, `POST`
+   - Overview: Allows influencers to search for campaigns based on niche and displays available campaigns with sponsor details.
+
+5. Create Influencer Request
+   - Endpoint: `/influencer/sponsor-requests/create`
+   - Methods: `POST`
+   - Overview: Enables influencers to submit requests to join a campaign by specifying campaign and sponsor details.
+
+6. Mark Ad Request as Completed
+   - Endpoint: `/influencer/ad-requests/mark-as-done/<int:key>`
+   - Methods: `GET`
+   - Overview: Marks an ad request as completed, updating its status.
+
+7. Accept Sponsor Request
+   - Endpoint: `/influencer/sponsor-requests/accept/<int:key>`
+   - Methods: `GET`
+   - Overview: Accepts a sponsor request and creates an ad request associated with the campaign.
+
+8. Reject Sponsor Request
+   - Endpoint: `/influencer/sponsor-requests/reject/<int:key>`
+   - Methods: `GET`
+   - Overview: Rejects a sponsor request by updating its status.
+
+9. Negotiate Sponsor Request
+   - Endpoint: `/influencer/sponsor-requests/negotiate/<int:key>`
+   - Methods: `POST`
+   - Overview: Allows influencers to negotiate the payment terms of a sponsor request, updating or replacing the request accordingly.
+
+---
+
+Certainly! Here’s the documentation for the `sponsor` controllers in the requested format:
+
+---
+
+Sponsor Controllers Overview
+
+1. Sponsor Registration
+   - Endpoint: `/sponsor/register`
+   - Methods: `GET`, `POST`
+   - Overview: Manages sponsor registration. Displays the registration form on `GET` and creates a new sponsor record on `POST` if the username is unique.
+
+2. Sponsor Dashboard
+   - Endpoint: `/sponsor/dashboard`
+   - Methods: `GET`, `POST`
+   - Overview: Displays the sponsor’s dashboard, including ongoing and past campaigns, ad requests, and influencer requests. Updates campaign progress based on the current date.
+
+3. Sponsor Profile
+   - Endpoint: `/sponsor/profile`
+   - Methods: `GET`
+   - Overview: Shows the sponsor’s profile, including the number of completed campaigns and ad requests.
+
+4. Find Influencers
+   - Endpoint: `/sponsor/find`
+   - Methods: `GET`, `POST`
+   - Overview: Allows sponsors to search for influencers based on category and niche. Displays search results on `GET` and processes search queries.
+
+5. Create Campaign
+   - Endpoint: `/sponsor/create-campaign`
+   - Methods: `GET`, `POST`
+   - Overview: Provides a form to create a new campaign. Displays the form on `GET` and adds the new campaign to the database on `POST`.
+
+6. Modify Campaign
+   - Endpoint: `/sponsor/modify-campaign/<int:key>`
+   - Methods: `GET`, `POST`
+   - Overview: Allows sponsors to modify an existing campaign. Displays current campaign details on `GET` and updates campaign information on `POST`.
+
+7. Delete Campaign
+   - Endpoint: `/sponsor/delete-campaign/<int:key>`
+   - Methods: `GET`
+   - Overview: Deletes a specific campaign and associated records (ad requests, influencer requests, sponsor requests) from the database.
+
+8. Modify Ad Request
+   - Endpoint: `/sponsor/ad-requests/modify/<int:key>`
+   - Methods: `POST`
+   - Overview: Updates the details of an existing ad request, including description, niche, and payment information.
+
+9. Create Sponsor Request
+   - Endpoint: `/sponsor/influencer-requests/create`
+   - Methods: `POST`
+   - Overview: Allows a sponsor to create a new request for an influencer, adding a new sponsor request to the database.
+
+10. Accept Influencer Request
+    - Endpoint: `/sponsor/influencer-requests/accept/<int:key>`
+    - Methods: `GET`
+    - Overview: Accepts an influencer request and creates an ad request with the same details.
+
+11. Reject Influencer Request
+    - Endpoint: `/sponsor/influencer-requests/reject/<int:key>`
+    - Methods: `GET`
+    - Overview: Rejects an influencer request by updating its status in the database.
+
+12. Negotiate Influencer Request
+    - Endpoint: `/sponsor/influencer-requests/negotiate/<int:key>`
+    - Methods: `POST`
+    - Overview: Allows a sponsor to negotiate the payment terms of an influencer request and update the request accordingly.
+
+13. Payment
+    - Endpoint: `/sponsor/payment/<int:key>`
+    - Methods: `GET`, `POST`
+    - Overview: Handles the payment process for completed ad requests. Displays the payment form on `GET` and marks the ad request as completed on `POST`.
+
+---

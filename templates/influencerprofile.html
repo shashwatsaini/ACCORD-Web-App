@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='sponsordashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatpopup.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +64,29 @@
             </div>
         </nav>
     </div>
+
+    <!-- Chat Button -->
+    <div class="chat-button" onclick="toggleChat()">
+        Chat with Us
+    </div>
+
+    <div class="chat-popup" id="chatPopup">
+        <div class="chat-card-header">
+            Chat with Us
+            <button class="chat-close-btn" onclick="toggleChat()">&times;</button>
+        </div>
+        <div class="chat-card-body" id="chatBody">
+            <!-- Messages will be added here dynamically -->
+        </div>
+        <div class="chat-card-footer">
+            <div class="chat-input">
+                <textarea id="userMessage" placeholder="Type your message..."></textarea>
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
 
     <div class="container mt-5">
         <div class="row">

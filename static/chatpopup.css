@@ -1,0 +1,111 @@
+.chat-button, .chat-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-button {
+    display: block;
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+    padding: 1rem;
+    padding-top: 1rem;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+}
+
+.chat-button:hover {
+    background: linear-gradient(0deg, #FF5733, #FF8C6B);
+}
+
+.chat-popup {
+    display: none;
+    background-color: #fff;
+    height: 600px;
+}
+
+.chat-card-header {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    color: white;
+    padding: 1rem;
+    padding-top: 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.chat-card-header .chat-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.chat-card-body {
+    padding: 1.5rem;
+    height: calc(100% - 220px);
+    overflow-y: auto;
+}
+
+.chat-card-footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem;
+}
+
+.chat-input textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    resize: none;
+}
+
+.chat-input button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+}
+
+.chat-input button:hover {
+    background: linear-gradient(0deg, #FF5733, #FF8C6B);
+}
+
+.chat-card-header .chat-close-btn {
+    font-size: 30px; 
+    top: 50%;
+    transform: translateY(-50%);     
+}
+
+.message-box {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    color: white;
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.message-box.bot {
+    background: linear-gradient(135deg, #FF5733, #FF8C6B);
+}
+
+.message-box.user {
+    background: linear-gradient(135deg, #28A745, #66FF8F);
+    text-align: right;
+}
