@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='chatpopup.css') }}">
+    <script src="{{ url_for('static', filename='profile_insights.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,18 +48,18 @@
 
     <!-- Chat Button -->
     <div class="chat-button" onclick="toggleChat()">
-        Chat with Us
+        Chat | Powered by Gemini <i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i>
     </div>
 
     <div class="chat-popup" id="chatPopup">
-        <div class="card-header">
-            Chat with Us
+        <div class="chat-card-header">
+            Chat | Powered by Gemini <i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i>
             <button class="chat-close-btn" onclick="toggleChat()">&times;</button>
         </div>
-        <div class="card-body" id="chatBody">
+        <div class="chat-card-body" id="chatBody">
             <!-- Messages will be added here dynamically -->
         </div>
-        <div class="card-footer">
+        <div class="chat-card-footer">
             <div class="chat-input">
                 <textarea id="userMessage" placeholder="Type your message..."></textarea>
                 <button onclick="sendMessage()">Send</button>
@@ -130,20 +131,39 @@
                         </div>
                     </div>
                     <div class="modal-body" id="profileModalBody{{ loop.index0 }}">
-                        <p><strong>Bio: </strong>{{ influencer.bio }}</p>
-                        <p><strong>Platforms: </strong>{{ influencer.platforms }}</p>
-                        <p><strong>Category: </strong>{{ influencer.category }}</p>
-                        <p><strong>Niche: </strong>{{ influencer.niche }}</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <div style="text-align: left;">
-                            <p><b>Ad Requests Completed: {{ adrequest_count }}</b></p>
-                            <p>The license into Accord.</p>
+        
+                        <!-- Profile Card -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p><strong>Bio: </strong>{{ influencer.bio }}</p>
+                                <p><strong>Platforms: </strong>{{ influencer.platforms }}</p>
+                                <p><strong>Category: </strong>{{ influencer.category }}</p>
+                                <p><strong>Niche: </strong>{{ influencer.niche }}</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <div style="text-align: left;">
+                                    <p><b>Ad Requests Completed: {{ adrequest_count }}</b></p>
+                                    <p>The license into Accord.</p>
+                                </div>
+                            </div>
                         </div>
+        
+                        <!-- AI Insights for the Profile -->
+                        <div class="card mb-3">
+                            <div class="card-header d-flex justify-content-between align-items-center" style="padding: 10px 20px;">
+                                <h5 class="m-0" style="text-align: left;">AI Insights</h5>
+                                <span style="font-size: 1rem;">Powered by Gemini <i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i></span>
+                            </div>
+                            <div class="card-body" id="profileInsights{{ influencer.username }}">
+                                AI Insights are loading, please wait.
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
-        </div>
+        </div>        
+        
         <!-- Send Request Popup -->
         <div class="modal fade" id="adRequestModal{{ loop.index0 }}" tabindex="-1" aria-labelledby="adRequestModalLabel{{ loop.index0 }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -222,7 +242,7 @@
                                 <button class="btn btn-custom w-100 mt-2 collab-btn" type="button" data-bs-toggle="modal" data-bs-target="#adRequestModal{{ loop.index0 }}">
                                     Send a Request
                                 </button>
-                                <button class="btn btn-custom w-100 mt-2 licence-btn" type="button" data-bs-toggle="modal" data-bs-target="#profileModal{{ loop.index0 }}">
+                                <button class="btn btn-custom w-100 mt-2 licence-btn" type="button" data-bs-toggle="modal" data-bs-target="#profileModal{{ loop.index0 }}" onclick="loadInfluencerInsights('{{ influencer.username }}')">
                                     See Profile
                                 </button>
                             </div>

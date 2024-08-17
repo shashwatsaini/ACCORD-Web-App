@@ -8,7 +8,7 @@ function toggleChat() {
         chatButton.style.display = "none";
 
         if (!initialMessageShown) {
-            addMessage("Bot", "You're talking to a Gemini-powered AI assistant. Please be respectful at all times.");
+            addMessage("Bot", "You are talking to a Gemini-powered AI assistant. Please be respectful at all times.");
             initialMessageShown = true;
         }
     } else {
