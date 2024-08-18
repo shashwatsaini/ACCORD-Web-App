@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='influencerdashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='chatpopup.css') }}">
+    <script src="{{ url_for('static', filename='ai_insights.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,6 +69,29 @@
 
     <script src="{{ url_for('static', filename='chat.js') }}"></script>
 
+    {% if ads_campaigns[0] %}
+        {% for ad, campaign, sponsor in ads_campaigns %}
+        <!-- Popup for showing AI Insights for Campaigns-->
+        <div class="modal fade" id="campaignInsightsModal{{ campaign.key }}" tabindex="-1" role="dialog" aria-labelledby="aiInsightsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                <div class="modal-content curved-modal">
+                    <div class="modal-header curved-modal-header">
+                        <div class="text-left">
+                            <h5 class="m-0" style="text-align: left; padding-left: 0px;">AI Insights</h3>
+                        </div>
+                        <div class="text-right">
+                            <span style="font-size: 1rem;">Powered by Gemini <i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i></span>
+                        </div>
+                    </div>
+                    <div class="modal-body" id="campaignInsights{{ campaign.key }}">
+                        AI Insights are loading, please wait.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}     
+
     <br><br>
     <div class="container">
         <!-- Shows all active ad requests -->
@@ -111,6 +135,9 @@
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ campaign.progress }}%;" aria-valuenow="{{ campaign.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
                                                 {% if ad.status == 2 %}
+                                                <button class="btn custom-btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#campaignInsightsModal{{campaign.key }}" onclick="loadCampaignInsights('{{ campaign.key }}')" style="font-size: small;">
+                                                    AI Insights | Powered by Gemini <i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i>
+                                                </button>
                                                 <button class="btn custom-btn-danger" type="button" onclick="location.href='{{ url_for('complete_ad_request', key=ad.key) }}'">
                                                     Mark as Completed
                                                 </button>

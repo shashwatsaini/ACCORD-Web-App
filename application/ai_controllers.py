@@ -7,7 +7,7 @@ from application.database import db
 from application.models import Admin, Influencer, Sponsor, AdRequests, Campaign, InfluencerRequests, SponsorRequests
 
 import autogen
-from application.agents import chat_assistant, profile_insights_assistant, user_proxy
+from application.agents import chat_assistant, profile_insights_assistant, campaign_insights_assistant, user_proxy
 from application.config import APIKeys, AgentGuide
 llm_config = APIKeys.llm_config
 agent_guide = AgentGuide.agent_guide
@@ -65,3 +65,22 @@ def profile_insights():
     
     else:
         return jsonify({"response": "There is an error with AI Insights, please try later."})
+    
+@app.route('/campaign_insights', methods=['GET'])
+def campaign_insights():
+    key = request.args.get('key')
+    campaign = Campaign.query.get(key)
+    ad_requests = db.session.query(AdRequests.description).filter_by(campaign=key).all()
+
+    chat_outline = {
+        'sender': user_proxy,
+        'recipient': campaign_insights_assistant,
+        'message': f'Campaign: {campaign.name}, Campaign Description: {campaign.description}, Ad Requests: {ad_requests}',
+        'summary_method': 'last_msg',
+        'max_turns': 1,
+        'clear_history': True
+    }
+
+    chat = autogen.initiate_chats([chat_outline])
+    reply = chat[-1].summary
+    return jsonify({"response": reply})

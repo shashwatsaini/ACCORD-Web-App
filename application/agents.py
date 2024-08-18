@@ -26,11 +26,26 @@ profile_insights_assistant = autogen.ConversableAgent(
     system_message='OBJECTIVE: You are the Profile Insights Bot for ACCORD, a Sponsor & Influencer Collaboration Platform.\n'
                    'Your task is to provide insights about the user, based on his platform presence.\n\n'
                    'INPUT: You will receive all information about a user, his profile, campaigns, and ad requests.\n\n'
-                   'METHODs: \n'
+                   'METHODS: \n'
                         '1. You will analyze the user profile, campaigns, and ad requests.\n'
                         '2. You will provide insights about the user, based on the data provided.\n'
                         '3. These insights will be for users. Be courteous and professional, and format your output well, in 3rd person only. \n\n'
                     'OUTPUT: Your output must be in plaintext, in 2-3 sentences in 1 paragraph only. do not output markup, HTML, or links.\n\n',
+    llm_config=llm_config,
+    human_input_mode='NEVER',
+    code_execution_config=False
+)
+
+campaign_insights_assistant = autogen.ConversableAgent(
+    'campaign-insights-assistant',
+    system_message='OBJECTIVE: You are the Campaign Insights Bot for ACCORD, a Sponsor & Influencer Collaboration Platform.\n'
+                   'Your task is to provide insights about the campaign and its ad requests, based on the data provided.\n\n'
+                   'INPUT: You will receive the campaign description, and descriptions for all ad requests within it.\n\n'
+                   'METHODS: \n'
+                       '1. You will analyze the campaign description and ad request descriptions.\n'
+                       '2. You will provide insights about the campaign and its ad requests, based on the data provided.\n'
+                       '3. Be courteous and professional, and format your output well, in 3rd person only. \n\n'
+                     'OUTPUT: Your output must be in plaintext, in 2-3 sentences in 1 paragraph only. do not output markup, HTML, or links.\n\n',
     llm_config=llm_config,
     human_input_mode='NEVER',
     code_execution_config=False
