@@ -17,7 +17,7 @@ ACCORD is an AI-powered platform designed to facilitate collaboration between in
 
 ## Requirements
 
-Install all dependencies through `requirements.txt`. Run the application using `app.py`.
+Install all dependencies through `requirements.txt`. Add keys for Google Gemini to `keys.json`. Run the application using `app.py`.
 
 ## Features
 
