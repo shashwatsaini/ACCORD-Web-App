@@ -1,0 +1,8 @@
+{
+    "GEMINI_KEY":{
+        "MODEL": "gemini-pro",
+        "PROJECT_ID": "ADD PROJECT ID HERE",
+        "API_KEY": "ADD API KEY HERE",
+        "API_TYPE": "google"
+    }
+}
