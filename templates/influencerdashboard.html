@@ -103,10 +103,10 @@
         </div>
         <div class="row">
             <div class="col-12 text-center card-container">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
+                <div class="swiper-container swiper-container-1">
+                    <div class="swiper-wrapper swiper-wrapper-1">
                         {% for ad, campaign, sponsor in ads_campaigns %}
-                        <div class="swiper-slide d-flex">
+                        <div class="swiper-slide swiper-slide-1 d-flex">
                             <div class="card" style="width: 30rem;">
                                 <div class="card-header">
                                     <h5 class="card-title">{{ sponsor.company }}: {{ campaign.name }}</h5>
@@ -162,8 +162,8 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next swiper-button-next-1"></div>
+                    <div class="swiper-button-prev swiper-button-prev-1"></div>
                 </div>
             </div>
         </div>     
@@ -234,10 +234,10 @@
                 <h1 style="color: black;">New Requests</h1>
             </div>
             <div class="col-12 text-center card-container">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
+                <div class="swiper-container swiper-container-2">
+                    <div class="swiper-wrapper swiper-wrapper-2">
                         {% for request, campaign, sponsor in sponsor_requests %}
-                        <div class="swiper-slide d-flex">
+                        <div class="swiper-slide swiper-slide-2 d-flex">
                             <div class="custom-card" style="width: 30rem;">
                                 <div class="custom-card-header">
                                     <h5 class="card-title">{{ campaign.name }}</h5>
@@ -271,9 +271,9 @@
                         </div>
                         {% endfor %}
                     </div>  
+                    <div class="swiper-button-next swiper-button-next-2"></div>
+                    <div class="swiper-button-prev swiper-button-prev-2"></div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
             </div>
         </div>
         {% else %}
@@ -293,10 +293,10 @@
                 <h1 style="color: black;">Completed Requests</h1>
             </div>
             <div class="col-12 text-center card-container">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
+                <div class="swiper-container swiper-container-3">
+                    <div class="swiper-wrapper swiper-wrapper-3">
                         {% for request, campaign, sponsor in completed_requests %}
-                        <div class="swiper-slide d-flex">
+                        <div class="swiper-slide swiper-slide-3 d-flex">
                             <div class="custom-card" style="width: 30rem;">
                                 <div class="custom-card-header">
                                     <h5 class="card-title">{{ campaign.name }}</h5>
@@ -327,9 +327,9 @@
                         </div>
                         {% endfor %}
                     </div>  
+                    <div class="swiper-button-next swiper-button-next-3"></div>
+                    <div class="swiper-button-prev swiper-button-prev-3"></div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
             </div>
         </div>
         {% else %}
@@ -349,10 +349,10 @@
                 <h1 style="color: black;">Rejected Requests</h1>
             </div>
             <div class="col-12 text-center card-container">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
+                <div class="swiper-container swiper-container-4">
+                    <div class="swiper-wrapper swiper-wrapper-4">
                         {% for request, campaign, sponsor in past_sponsor_requests %}
-                        <div class="swiper-slide d-flex">
+                        <div class="swiper-slide swiper-slide-4 d-flex">
                             <div class="custom-card" style="width: 30rem;">
                                 <div class="custom-card-header">
                                     <h5 class="card-title">{{ campaign.name }}</h5>
@@ -379,9 +379,9 @@
                         </div>
                         {% endfor %}
                     </div>  
+                    <div class="swiper-button-next swiper-button-next-4"></div>
+                    <div class="swiper-button-prev swiper-button-prev-4"></div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
             </div>
         </div>
         {% else %}
@@ -419,7 +419,7 @@
             sliders[index].value = value;
         }
 
-        var swiper = new Swiper('.swiper-container', {
+        var swiper = new Swiper('.swiper-container-1', {
             slidesPerView: 1,
             spaceBetween: 10,
             breakpoints: {
@@ -437,19 +437,105 @@
                 },
             },
             navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
+                nextEl: '.swiper-button-next-1',
+                prevEl: '.swiper-button-prev-1',
             },
         });
 
         $(document).ready(function(){
-            var cardCount = $('.swiper-slide').length;
+            var cardCount = $('.swiper-slide-1').length;
             if(cardCount < 2) {
                 swiper.destroy();
+            }
+        });
+
+        var swiper2 = new Swiper('.swiper-container-2', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+            navigation: {
+                nextEl: '.swiper-button-next-2',
+                prevEl: '.swiper-button-prev-2',
+            }
+        });
+
+        $(document).ready(function(){
+            var cardCount = $('.swiper-slide-2').length;
+            if(cardCount < 2) {
+                swiper2.destroy();
+            }
+        });
+
+        var swiper3 = new Swiper('.swiper-container-3', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+            navigation: {
+                nextEl: '.swiper-button-next-3',
+                prevEl: '.swiper-button-prev-3',
+            }
+        });
+
+        $(document).ready(function(){
+            var cardCount = $('.swiper-slide-3').length;
+            if(cardCount < 2) {
+                swiper3.destroy();
+            }
+        });
+
+        var swiper4 = new Swiper('.swiper-container-4', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+            navigation: {
+                nextEl: '.swiper-button-next-4',
+                prevEl: '.swiper-button-prev-4',
+            }
+        });
+
+        $(document).ready(function(){
+            var cardCount = $('.swiper-slide-4').length;
+            if(cardCount < 2) {
+                swiper4.destroy();
             }
         });
 

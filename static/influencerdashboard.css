@@ -108,12 +108,13 @@ input::placeholder {
 
 .swiper-container {
     position: relative;
-    
 }
+
 .swiper-slide {
     display: flex;
     justify-content: center;
 }
+
 .swiper-button-next, .swiper-button-prev {
     position: absolute;
     top: 50%;
@@ -130,7 +131,6 @@ input::placeholder {
 .swiper-button-next {
     right: 10;
 }
-
 .swiper-button-prev {
     left: 10;
 }
